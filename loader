@@ -15,5 +15,6 @@ if queueteleport then
         safeLoad()
     ]])
 end
+#123
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/loader", true))()
