@@ -225,7 +225,7 @@ local r = p:FindFirstChild("Backpack"):FindFirstChild("Revolver")
 if r and r:IsA("Tool") then
     r.Parent = p.Character
 end
-er
+
     end
 
     -- Ждём появления оружия и конфигурации
