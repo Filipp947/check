@@ -7,7 +7,7 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
 -- Проверка ключа
-local keys = loadstring(game:HttpGet("https://pastebin.com/raw/44dq0ejx"))()
+local keys = loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/main"))()
 local isValid = false
 for _, v in ipairs(keys) do
     if key == v then
