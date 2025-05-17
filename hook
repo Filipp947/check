@@ -1,0 +1,41 @@
+
+local HttpService = game:GetService("HttpService")
+local player = game:GetService("Players").LocalPlayer
+
+
+local embed = {
+    title = "Script executed",
+    color = 65280,
+    fields = {
+        {
+            name = "👤 Username",
+            value = "`" .. player.Name .. "`"
+        },
+    },
+    footer = {
+        text = "🕒 Время: " .. os.date("%Y-%m-%d %H:%M:%S")
+    }
+}
+
+local data = {
+    username = "Logger",
+    embeds = {embed}
+}
+
+local success, encoded = pcall(function()
+    return HttpService:JSONEncode(data)
+end)
+
+if not success then
+    warn("❌ JSONEncode Error:", encoded)
+    return
+end
+
+pcall(function()
+    http_request({
+        Url = "https://discordapp.com/api/webhooks/1302241985998094386/2XzA5UUUl-qNqoM7Pj8u6prP71F4Z-OkQuQfF52wnxGzC0F824zCy02ovsPi33-h72Fe",
+        Method = "POST",
+        Headers = {["Content-Type"] = "application/json"},
+        Body = encoded
+    })
+end)
