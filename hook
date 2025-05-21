@@ -1,19 +1,25 @@
-
 local HttpService = game:GetService("HttpService")
 local player = game:GetService("Players").LocalPlayer
 
+local keyInfo = table.concat({
+    "getgenv().key = " .. tostring(getgenv().key),
+    "getgenv().autobond = " .. tostring(getgenv().autobond),
+    "getgenv().autowin = " .. tostring(getgenv().autowin)
+}, "\n")
 
 local embed = {
     title = "Script executed",
     color = 65280,
     fields = {
         {
-            name = "👤 Username",
             value = "`" .. player.Name .. "`"
         },
+        {
+            value = "```\n" .. keyInfo .. "\n```"
+        }
     },
     footer = {
-        text = "🕒 Время: " .. os.date("%Y-%m-%d %H:%M:%S")
+        text = "🕒 Time: " .. os.date("%Y-%m-%d %H:%M:%S")
     }
 }
 
