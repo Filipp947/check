@@ -1,1 +1,3 @@
-return ["bugrovog"]
+return {
+    ["govorgub"] = true,
+}
