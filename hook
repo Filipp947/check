@@ -1,22 +1,18 @@
 local HttpService = game:GetService("HttpService")
 local player = game:GetService("Players").LocalPlayer
 
-getgenv().key = "govorgub"
-
-
 local lines = {}
 
 if getgenv()["key"] ~= nil then
     table.insert(lines, "getgenv().key: " .. tostring(getgenv()["key"]))
 end
-if getgenv().autobond ~= nil then
+if getgenv().autobond ~= nil and ~= false then
     table.insert(lines, "getgenv().autobond: " .. tostring(getgenv().autobond))
 end
-if getgenv().autowin ~= nil then
+if getgenv().autowin ~= nil and ~= false then
     table.insert(lines, "getgenv().autowin: " .. tostring(getgenv().autowin))
 end
 
--- Формируем embed с блоком кода
 local embed = {
     title = "Script Executed",
     color = 65280,
