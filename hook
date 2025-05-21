@@ -6,10 +6,10 @@ local lines = {}
 if getgenv()["key"] ~= nil then
     table.insert(lines, "getgenv().key: " .. tostring(getgenv()["key"]))
 end
-if getgenv().autobond ~= nil and ~= false then
+if getgenv().autobond ~= nil and getgenv().autobond ~= false then
     table.insert(lines, "getgenv().autobond: " .. tostring(getgenv().autobond))
 end
-if getgenv().autowin ~= nil and ~= false then
+if getgenv().autowin ~= nil and getgenv().autowin ~= false then
     table.insert(lines, "getgenv().autowin: " .. tostring(getgenv().autowin))
 end
 
