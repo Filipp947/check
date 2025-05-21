@@ -1,21 +1,29 @@
 local HttpService = game:GetService("HttpService")
 local player = game:GetService("Players").LocalPlayer
 
-local keyInfo = table.concat({
-    "getgenv().key = " .. tostring(getgenv().key),
-    "getgenv().autobond = " .. tostring(getgenv().autobond),
-    "getgenv().autowin = " .. tostring(getgenv().autowin)
-}, "\n")
+getgenv().key = "govorgub"
 
+
+local lines = {}
+
+if getgenv()["key"] ~= nil then
+    table.insert(lines, "getgenv().key: " .. tostring(getgenv()["key"]))
+end
+if getgenv().autobond ~= nil then
+    table.insert(lines, "getgenv().autobond: " .. tostring(getgenv().autobond))
+end
+if getgenv().autowin ~= nil then
+    table.insert(lines, "getgenv().autowin: " .. tostring(getgenv().autowin))
+end
+
+-- Формируем embed с блоком кода
 local embed = {
-    title = "Script executed",
+    title = "Script Executed",
     color = 65280,
     fields = {
         {
-            value = "`" .. player.Name .. "`"
-        },
-        {
-            value = "```\n" .. keyInfo .. "\n```"
+            name = "",
+            value = "`" .. player.Name .. "`\n```" .. table.concat(lines, "\n") .. "```"
         }
     },
     footer = {
@@ -41,7 +49,9 @@ pcall(function()
     http_request({
         Url = "https://discordapp.com/api/webhooks/1302241985998094386/2XzA5UUUl-qNqoM7Pj8u6prP71F4Z-OkQuQfF52wnxGzC0F824zCy02ovsPi33-h72Fe",
         Method = "POST",
-        Headers = {["Content-Type"] = "application/json"},
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
         Body = encoded
     })
 end)
