@@ -1,5 +1,4 @@
 return {
     "bugrovog",
-    "iop",
-    "temp1"
+    "iop"
 }
