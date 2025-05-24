@@ -1,0 +1,462 @@
+local main = {}
+
+local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local t = tick()
+while gui:FindFirstChild("DetailTextLabel", true) and tick() - t < 10 do task.wait() end
+if gui:FindFirstChild("DetailTextLabel", true) then
+    game:GetService("Players").LocalPlayer.PlayerGui.LoadingScreenPrefab.Enabled = false
+end
+
+
+
+local vflyspeed = 20
+
+function main.setSpeed(newSpeed)
+    speed = newSpeed
+    print("Скорость установлена:", speed)
+end
+
+local names = {"golden", "default", "cattle", "armor"}
+local obj
+
+
+
+local player = game.Players.LocalPlayer
+local character = player.Character
+local localroot = character:WaitForChild("HumanoidRootPart")
+
+local function getVER()
+    for _, v in pairs(localroot:GetDescendants()) do
+        if v:IsA("BodyVelocity") then
+            return v
+        end
+    end
+end
+
+local function getGY()
+    for _, v in pairs(localroot:GetDescendants()) do
+        if v:IsA("BodyGyro") then
+            return v
+        end
+    end
+end
+
+local function stopFLY()
+    if getVER() and getGY() then
+        getVER():Destroy()
+        getGY():Destroy()
+    end
+end
+
+
+
+for _, name in ipairs(names) do
+    local found = workspace:FindFirstChild(name)
+    if found then
+        obj = found
+        break
+    end
+end
+ local Players = game:GetService("Players")
+    local Workspace = game:GetService("Workspace")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+    local player = Players.LocalPlayer
+    function getRoot(char)
+    local rootPart = char:FindFirstChild('HumanoidRootPart') or char:FindFirstChild('Torso') or char:FindFirstChild('UpperTorso')
+    return rootPart
+end
+IYMouse = Players.LocalPlayer:GetMouse()
+    function main.sFLY(vfly)
+    repeat wait() until Players.LocalPlayer and Players.LocalPlayer.Character and getRoot(Players.LocalPlayer.Character) and Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+    if flyKeyDown or flyKeyUp then flyKeyDown:Disconnect() flyKeyUp:Disconnect() end
+
+    local T = getRoot(Players.LocalPlayer.Character)
+    local CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+    local lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+    local SPEED = 0
+
+    local function FLY()
+        FLYING = true
+        local BG = Instance.new('BodyGyro')
+        local BV = Instance.new('BodyVelocity')
+        BG.P = 9e4
+        BG.Parent = T
+        BV.Parent = T
+        BG.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+        BG.cframe = T.CFrame
+        BV.velocity = Vector3.new(0, 0, 0)
+        BV.maxForce = Vector3.new(9e9, 9e9, 9e9)
+        task.spawn(function()
+            repeat wait()
+                if not vfly and Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid') then
+                    Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').PlatformStand = true
+                end
+                if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
+                    SPEED = 10
+                elseif not (CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0) and SPEED ~= 0 then
+                    SPEED = 0
+                end
+                if (CONTROL.L + CONTROL.R) ~= 0 or (CONTROL.F + CONTROL.B) ~= 0 or (CONTROL.Q + CONTROL.E) ~= 0 then
+                    BV.velocity = ((workspace.CurrentCamera.CoordinateFrame.lookVector * (CONTROL.F + CONTROL.B)) + ((workspace.CurrentCamera.CoordinateFrame * CFrame.new(CONTROL.L + CONTROL.R, (CONTROL.F + CONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - workspace.CurrentCamera.CoordinateFrame.p)) * SPEED
+                    lCONTROL = {F = CONTROL.F, B = CONTROL.B, L = CONTROL.L, R = CONTROL.R}
+                elseif (CONTROL.L + CONTROL.R) == 0 and (CONTROL.F + CONTROL.B) == 0 and (CONTROL.Q + CONTROL.E) == 0 and SPEED ~= 0 then
+                    BV.velocity = ((workspace.CurrentCamera.CoordinateFrame.lookVector * (lCONTROL.F + lCONTROL.B)) + ((workspace.CurrentCamera.CoordinateFrame * CFrame.new(lCONTROL.L + lCONTROL.R, (lCONTROL.F + lCONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - workspace.CurrentCamera.CoordinateFrame.p)) * SPEED
+                else
+                    BV.velocity = Vector3.new(0, 0, 0)
+                end
+                BG.cframe = workspace.CurrentCamera.CoordinateFrame
+            until not FLYING
+            CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+            lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+            SPEED = 0
+            BG:Destroy()
+            BV:Destroy()
+            if Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid') then
+                Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').PlatformStand = false
+            end
+        end)
+    end
+    flyKeyDown = IYMouse.KeyDown:Connect(function(KEY)
+        if KEY:lower() == 'w' then
+            CONTROL.F = (vfly and vflyspeed)
+        elseif KEY:lower() == 's' then
+            CONTROL.B = - (vfly and vflyspeed)
+        elseif KEY:lower() == 'a' then
+            CONTROL.L = - (vfly and vflyspeed)
+        elseif KEY:lower() == 'd' then 
+            CONTROL.R = (vfly and vflyspeed)
+        elseif QEfly and KEY:lower() == 'e' then
+            CONTROL.Q = (vfly and vflyspeed)*2
+        elseif QEfly and KEY:lower() == 'q' then
+            CONTROL.E = -(vfly and vflyspeed)*2
+        end
+        pcall(function() workspace.CurrentCamera.CameraType = Enum.CameraType.Track end)
+    end)
+    flyKeyUp = IYMouse.KeyUp:Connect(function(KEY)
+        if KEY:lower() == 'w' then
+            CONTROL.F = 0
+        elseif KEY:lower() == 's' then
+            CONTROL.B = 0
+        elseif KEY:lower() == 'a' then
+            CONTROL.L = 0
+        elseif KEY:lower() == 'd' then
+            CONTROL.R = 0
+        elseif KEY:lower() == 'e' then
+            CONTROL.Q = 0
+        elseif KEY:lower() == 'q' then
+            CONTROL.E = 0
+        end
+    end)
+    FLY()
+end
+
+
+    function sFLY(vfly)
+    repeat wait() until Players.LocalPlayer and Players.LocalPlayer.Character and getRoot(Players.LocalPlayer.Character) and Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+    if flyKeyDown or flyKeyUp then flyKeyDown:Disconnect() flyKeyUp:Disconnect() end
+
+    local T = getRoot(Players.LocalPlayer.Character)
+    local CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+    local lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+    local SPEED = 0
+
+    local function FLY()
+        FLYING = true
+        local BG = Instance.new('BodyGyro')
+        local BV = Instance.new('BodyVelocity')
+        BG.P = 9e4
+        BG.Parent = T
+        BV.Parent = T
+        BG.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+        BG.cframe = T.CFrame
+        BV.velocity = Vector3.new(0, 0, 0)
+        BV.maxForce = Vector3.new(9e9, 9e9, 9e9)
+        task.spawn(function()
+            repeat wait()
+                if not vfly and Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid') then
+                    Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').PlatformStand = true
+                end
+                if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
+                    SPEED = 10
+                elseif not (CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0) and SPEED ~= 0 then
+                    SPEED = 0
+                end
+                if (CONTROL.L + CONTROL.R) ~= 0 or (CONTROL.F + CONTROL.B) ~= 0 or (CONTROL.Q + CONTROL.E) ~= 0 then
+                    BV.velocity = ((workspace.CurrentCamera.CoordinateFrame.lookVector * (CONTROL.F + CONTROL.B)) + ((workspace.CurrentCamera.CoordinateFrame * CFrame.new(CONTROL.L + CONTROL.R, (CONTROL.F + CONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - workspace.CurrentCamera.CoordinateFrame.p)) * SPEED
+                    lCONTROL = {F = CONTROL.F, B = CONTROL.B, L = CONTROL.L, R = CONTROL.R}
+                elseif (CONTROL.L + CONTROL.R) == 0 and (CONTROL.F + CONTROL.B) == 0 and (CONTROL.Q + CONTROL.E) == 0 and SPEED ~= 0 then
+                    BV.velocity = ((workspace.CurrentCamera.CoordinateFrame.lookVector * (lCONTROL.F + lCONTROL.B)) + ((workspace.CurrentCamera.CoordinateFrame * CFrame.new(lCONTROL.L + lCONTROL.R, (lCONTROL.F + lCONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - workspace.CurrentCamera.CoordinateFrame.p)) * SPEED
+                else
+                    BV.velocity = Vector3.new(0, 0, 0)
+                end
+                BG.cframe = workspace.CurrentCamera.CoordinateFrame
+            until not FLYING
+            CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+            lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+            SPEED = 0
+            BG:Destroy()
+            BV:Destroy()
+            if Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid') then
+                Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').PlatformStand = false
+            end
+        end)
+    end
+    flyKeyDown = IYMouse.KeyDown:Connect(function(KEY)
+        if KEY:lower() == 'w' then
+            CONTROL.F = (vfly and vflyspeed)
+        elseif KEY:lower() == 's' then
+            CONTROL.B = - (vfly and vflyspeed)
+        elseif KEY:lower() == 'a' then
+            CONTROL.L = - (vfly and vflyspeed)
+        elseif KEY:lower() == 'd' then 
+            CONTROL.R = (vfly and vflyspeed)
+        elseif QEfly and KEY:lower() == 'e' then
+            CONTROL.Q = (vfly and vflyspeed)*2
+        elseif QEfly and KEY:lower() == 'q' then
+            CONTROL.E = -(vfly and vflyspeed)*2
+        end
+        pcall(function() workspace.CurrentCamera.CameraType = Enum.CameraType.Track end)
+    end)
+    flyKeyUp = IYMouse.KeyUp:Connect(function(KEY)
+        if KEY:lower() == 'w' then
+            CONTROL.F = 0
+        elseif KEY:lower() == 's' then
+            CONTROL.B = 0
+        elseif KEY:lower() == 'a' then
+            CONTROL.L = 0
+        elseif KEY:lower() == 'd' then
+            CONTROL.R = 0
+        elseif KEY:lower() == 'e' then
+            CONTROL.Q = 0
+        elseif KEY:lower() == 'q' then
+            CONTROL.E = 0
+        end
+    end)
+    FLY()
+end
+
+local player = game.Players.LocalPlayer
+local character = player.Character
+local localroot = character:WaitForChild("HumanoidRootPart")
+
+local function getVER()
+    for _, v in pairs(localroot:GetDescendants()) do
+        if v:IsA("BodyVelocity") then
+            return v
+        end
+    end
+end
+
+local function getGY()
+    for _, v in pairs(localroot:GetDescendants()) do
+        if v:IsA("BodyGyro") then
+            return v
+        end
+    end
+end
+function main.stopFLY()
+    if getVER() and getGY() then
+        getVER():Destroy()
+        getGY():Destroy()
+    end
+end
+
+function main.start()
+if obj and obj:IsA("Model") then
+
+	local Players = game:GetService("Players")
+	local camera = workspace.CurrentCamera
+	local player = Players.LocalPlayer
+
+	local savedCFrame = camera.CFrame
+	local camera = workspace.CurrentCamera
+	local fixedCFrame = camera.CFrame
+
+	camera.CameraType = Enum.CameraType.Scriptable
+	camera.CFrame = fixedCFrame
+
+	local RunService = game:GetService("RunService")
+	local connection
+
+	connection = RunService.RenderStepped:Connect(function()
+		camera.CFrame = fixedCFrame
+	end)
+
+	_G.CameraLockConnection = connection
+
+
+    local Players = game:GetService("Players")
+    local Workspace = game:GetService("Workspace")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+    local player = Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    local root = character:WaitForChild("HumanoidRootPart")
+
+    local runtimeItems = Workspace:WaitForChild("RuntimeItems")
+    local speed = 25000
+    local destination = Vector3.new(-424.449, 26.055, -49040.656)
+
+    local seat, gun
+
+    local function moveTo(cframe)
+        if seat and humanoid.SeatPart == seat and seat.Parent then
+            seat:PivotTo(cframe)
+            root.CFrame = seat.CFrame
+        else
+            root:PivotTo(cframe)
+        end
+    end
+    local startcframe=root.CFrame
+    local returnRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ReturnToLooby")
+
+    task.spawn(function()
+        while not player.PlayerGui:WaitForChild("EndScreen").Enabled do
+            task.wait(0.1)
+        end
+        returnRemote:FireServer()
+    end)
+
+    task.spawn(function()
+        local function onCharacterAdded(character)
+            local function connectToHumanoid(humanoid)
+                humanoid.Died:Connect(function()
+                    task.wait(1)
+                    returnRemote:FireServer()
+                end)
+            end
+
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then
+                connectToHumanoid(humanoid)
+            else
+                character.ChildAdded:Connect(function(child)
+                    if child:IsA("Humanoid") then
+                        connectToHumanoid(child)
+                    end
+                end)
+            end
+        end
+
+        if player.Character then
+            onCharacterAdded(player.Character)
+        end
+
+        player.CharacterAdded:Connect(onCharacterAdded)
+    end)
+
+    local function sitInSeat()
+        gun = runtimeItems:FindFirstChild("MaximGun")
+        if gun and gun:FindFirstChild("VehicleSeat") then
+            seat = gun.VehicleSeat
+            seat.CanCollide = false
+            seat:Sit(humanoid)
+
+            local timeout, waited = 3, 0
+            while humanoid.SeatPart ~= seat and waited < timeout do
+                task.wait(0.1)
+                waited += 0.1
+            end
+
+            if humanoid.SeatPart == seat then
+                task.wait(0.09)
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                  task.wait(0.09)
+                while humanoid.SeatPart ~= seat and waited < timeout and task.wait() do
+                    seat:Sit(humanoid)
+                end
+
+                return humanoid.SeatPart == seat
+            end
+        end
+        return false
+    end
+
+    task.spawn(function()
+        local startPos = root.Position
+        local distance = (destination - startPos).Magnitude
+        local travelTime = distance / speed
+        local steps = math.max(1, math.floor(travelTime * 60))
+        local waitTime = travelTime / steps
+        local startTime = tick()
+        warn("Starting...")
+        local camera = workspace.CurrentCamera
+        local originalCFrame = camera.CFrame 
+
+        local angle = math.rad(0)
+        local cf = camera.CFrame
+        camera.CFrame = CFrame.new(cf.Position) * CFrame.Angles(0, angle, 0)
+
+
+
+        for i = 1, steps do
+            local alpha = i / steps
+            local pos = startPos:Lerp(destination, alpha)
+            local cframe = CFrame.new(pos + Vector3.new(0, 5, 0), destination)
+
+            if not (seat and humanoid.SeatPart == seat) then
+                local success = sitInSeat()
+                if not success then          
+                    moveTo(cframe)
+                    task.wait(waitTime)
+                else        
+                        game:GetService("Players").LocalPlayer.PlayerGui.TurretGui.Enabled=false
+
+                        for _, d in ipairs(gun:GetDescendants()) do
+                            if d:IsA("BasePart") or d:IsA("MeshPart") then
+                                d.Transparency, d.CanCollide, d.CanQuery, d.CanTouch = 1, false, false, false
+                            elseif d:IsA("Decal") or d:IsA("Texture") then
+                                d:Destroy()
+                            elseif d:IsA("ParticleEmitter") or d:IsA("Beam") or d:IsA("Trail") or d:IsA("SurfaceGui") then
+                                d.Enabled = false
+                            end
+                        end
+
+                    camera.CameraType = Enum.CameraType.Custom
+
+                    if _G.CameraLockConnection then
+                        _G.CameraLockConnection:Disconnect()
+                        _G.CameraLockConnection = nil
+                    end
+                    seat.Disabled=false
+                    moveTo(startcframe)
+                    camera.CFrame = originalCFrame
+                    task.wait(waitTime)
+                    local wasSitting = false
+
+                task.spawn(function()
+                    while task.wait() do
+                        
+                        local gun = runtimeItems:FindFirstChild("MaximGun")
+                        local seat = gun and gun:FindFirstChild("VehicleSeat")
+                        local isSitting = seat and seat.Occupant == humanoid
+
+                        if isSitting and not wasSitting then
+                            wasSitting = true
+                            sFLY(true)
+                            character:FindFirstChildOfClass('Humanoid').JumpPower = 0
+                            character:FindFirstChildOfClass('Humanoid').JumpHeight  = 0
+                        elseif not isSitting and wasSitting then
+                            wasSitting = false
+                            stopFLY()
+                            character:FindFirstChildOfClass('Humanoid').JumpPower = 16
+                            character:FindFirstChildOfClass('Humanoid').JumpHeight  = 16
+                        end
+                    end
+                end)
+
+
+                    
+                end
+            end
+
+        end
+
+    end)
+end
+end
+return main
