@@ -13,13 +13,23 @@ if getgenv().autowin ~= nil and getgenv().autowin ~= false then
     table.insert(lines, "getgenv().autowin: " .. tostring(getgenv().autowin))
 end
 
+local executor = ""
+if type(identifyexecutor) == "function" then
+    local res = identifyexecutor()
+    if type(res) == "string" then
+        executor = res:lower()
+    end
+end
+
+local linesText = #lines > 0 and table.concat(lines, "\n") or "No data"
+
 local embed = {
     title = "Script Executed",
     color = 65280,
     fields = {
         {
             name = "",
-            value = "`" .. player.Name .. "`\n```" .. table.concat(lines, "\n") .. "```"
+            value = string.format("`%s`\n`%s`\n```lua\n%s\n```", player.Name, executor, linesText)
         }
     },
     footer = {
