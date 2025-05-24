@@ -12,7 +12,7 @@ end
 local vflyspeed = 20
 
 function main.setSpeed(newSpeed)
-    speed = newSpeed
+    vflyspeed = newSpeed
     print("Скорость установлена:", speed)
 end
 
