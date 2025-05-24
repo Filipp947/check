@@ -1,1 +1,113 @@
-return {"online"}
+-- FlyModule.lua
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local mouse = player:GetMouse()
+
+local module = {}
+
+local FLYING = false
+local flyKeyDown, flyKeyUp
+local BV, BG
+local SPEED = 10
+local CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+local lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+
+local function getRoot(char)
+    return char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+end
+
+local function FLY(vfly)
+    local char = player.Character or player.CharacterAdded:Wait()
+    local root = getRoot(char)
+    if not root then return end
+
+    FLYING = true
+
+    BG = Instance.new("BodyGyro")
+    BG.P = 9e4
+    BG.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+    BG.cframe = root.CFrame
+    BG.Parent = root
+
+    BV = Instance.new("BodyVelocity")
+    BV.velocity = Vector3.new(0, 0, 0)
+    BV.maxForce = Vector3.new(9e9, 9e9, 9e9)
+    BV.Parent = root
+
+    task.spawn(function()
+        repeat
+            task.wait()
+            if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
+                SPEED = module.Speed
+            elseif SPEED ~= 0 then
+                SPEED = 0
+            end
+
+            local camCF = workspace.CurrentCamera.CFrame
+            local direction = (camCF.LookVector * (CONTROL.F + CONTROL.B))
+                + ((camCF * CFrame.new(CONTROL.L + CONTROL.R, (CONTROL.F + CONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0)).p - camCF.p)
+
+            BV.velocity = direction * SPEED
+            BG.cframe = camCF
+        until not FLYING
+
+        CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+        lCONTROL = CONTROL
+        SPEED = 0
+
+        if BV then BV:Destroy() end
+        if BG then BG:Destroy() end
+
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if humanoid then humanoid.PlatformStand = false end
+    end)
+end
+
+function module.sFLY(vfly)
+    if flyKeyDown then flyKeyDown:Disconnect() end
+    if flyKeyUp then flyKeyUp:Disconnect() end
+
+    local char = player.Character or player.CharacterAdded:Wait()
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if humanoid then humanoid.PlatformStand = true end
+
+    flyKeyDown = mouse.KeyDown:Connect(function(KEY)
+        local key = KEY:lower()
+        if key == 'w' then CONTROL.F = module.Speed
+        elseif key == 's' then CONTROL.B = -module.Speed
+        elseif key == 'a' then CONTROL.L = -module.Speed
+        elseif key == 'd' then CONTROL.R = module.Speed
+        elseif key == 'e' then CONTROL.Q = module.Speed * 2
+        elseif key == 'q' then CONTROL.E = -module.Speed * 2
+        end
+    end)
+
+    flyKeyUp = mouse.KeyUp:Connect(function(KEY)
+        local key = KEY:lower()
+        if key == 'w' then CONTROL.F = 0
+        elseif key == 's' then CONTROL.B = 0
+        elseif key == 'a' then CONTROL.L = 0
+        elseif key == 'd' then CONTROL.R = 0
+        elseif key == 'e' then CONTROL.Q = 0
+        elseif key == 'q' then CONTROL.E = 0
+        end
+    end)
+
+    FLY(vfly)
+end
+
+function module.nofly()
+    FLYING = false
+    if flyKeyDown then flyKeyDown:Disconnect() end
+    if flyKeyUp then flyKeyUp:Disconnect() end
+    CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+end
+
+-- default speed
+module.Speed = 10
+
+function module.setSpeed(newSpeed)
+    module.Speed = newSpeed
+end
+
+return module
