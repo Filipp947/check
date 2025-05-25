@@ -12,7 +12,7 @@ end
 StarterGui:SetCore("SendNotification", {
     Title = "Viridian",
     Text = "Join our discord for more features",
-	--Icon = "rbxassetid://1234567890",
+	Icon = 'rbxassetid://110794540193661',
     Callback = bind,
     Button1 = "Copy link",
     Duration = 5
