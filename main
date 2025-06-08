@@ -1,5 +1,4 @@
 return {
     ".gg/getviridian",
-    "iop",
-    "hhh"
+    "iop"
 }
