@@ -395,7 +395,7 @@ end)
 
     function Tab:update_sections()
         self.left_section.Visible = true
-        self.right_section.Visible = true
+        
 
         for _, object in container.Container:GetChildren() do
             if not object.Name:find("Section") then
@@ -547,8 +547,7 @@ end)
 		left_section.Name = "LeftSection"
 		left_section.Active = true
 		left_section.ScrollingEnabled = true
-		left_section.ClipsDescendants = true  -- добавь это
-
+		left_section.ClipsDescendants = true
 		left_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		left_section.BackgroundTransparency = 1
 		left_section.BorderSizePixel = 0
@@ -557,8 +556,7 @@ end)
 		left_section.ScrollBarThickness = 0
 		left_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
 
-		left_section.AutomaticCanvasSize = Enum.AutomaticSize.None
-
+	
 		local layout = Instance.new("UIListLayout")
 		layout.Padding = UDim.new(0, 6)
 		layout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -580,45 +578,23 @@ end)
         leftsectionlist.SortOrder = Enum.SortOrder.LayoutOrder
         leftsectionlist.Padding = UDim.new(0, 7)
 
-        local right_section = Instance.new("ScrollingFrame")
-        right_section.Name = "RightSection"
-        right_section.Active = true
-        right_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        right_section.BackgroundTransparency = 1.000
-        right_section.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        right_section.BorderSizePixel = 0
-        right_section.Position = UDim2.new(0.662374794, 0, 0.126760557, 0)
-        right_section.Size = UDim2.new(0, 215, 0, 372)
-        right_section.AutomaticCanvasSize = Enum.AutomaticSize.XY
-        right_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
-        right_section.ScrollBarThickness = 0
-
-        local rightsectionlist = Instance.new("UIListLayout")
-        rightsectionlist.Parent = right_section
-
-        rightsectionlist.HorizontalAlignment = Enum.HorizontalAlignment.Center
-        rightsectionlist.SortOrder = Enum.SortOrder.LayoutOrder
-        rightsectionlist.Padding = UDim.new(0, 7)
-
         if container.Container:FindFirstChild('RightSection') then
             left_section.Visible = false
-            right_section.Visible = false
+          
         else
             Tab.open_tab({
                 tab = tab,
-                left_section = left_section,
-                right_section = right_section
+                left_section = left_section
             })
         end
 
         left_section.Parent = container.Container
-        right_section.Parent = container.Container
-
+     
         tab.MouseButton1Click:Connect(function()
             Tab.open_tab({
                 tab = tab,
                 left_section = left_section,
-                right_section = right_section
+                
             })
         end)
 
