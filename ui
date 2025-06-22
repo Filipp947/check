@@ -18,6 +18,7 @@ local LocalPlayer = game:GetService('Players').LocalPlayer
 local TweenService = game:GetService('TweenService')
 local HttpService = game:GetService('HttpService')
 local CoreGui = game:GetService('CoreGui')
+local UserInputService = game:GetService("UserInputService")
 
 local Mouse = LocalPlayer:GetMouse();
 
@@ -166,7 +167,13 @@ function Library:new()
     Shadow.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Shadow.BorderSizePixel = 0
     Shadow.Position = UDim2.new(0.508668244, 0, 0.5, 0)
-    Shadow.Size = UDim2.new(0.4, 0, 0.5, 0)
+    if UserInputService.TouchEnabled then
+    Shadow.Size = UDim2.new(0.7, 0, 0.7, 0)
+    else
+        
+        Shadow.Size = UDim2.new(0.35, 0, 0.35, 0)
+    end
+
     Shadow.ZIndex = 0
     Shadow.Image = "rbxassetid://17290899982"
 
@@ -179,8 +186,15 @@ function Library:new()
     Container.BorderSizePixel = 0
     Container.ClipsDescendants = true
     Container.Position = UDim2.new(0.5, 0, 0.5, 0)
-   Container.Size = UDim2.new(0.35, 0, 0.45, 0)
 
+    if UserInputService.TouchEnabled then
+        Container.Size = UDim2.new(0.7, 0, 0.7, 0)
+    else
+    
+        Container.Size = UDim2.new(0.35, 0, 0.35, 0)
+    end
+
+    
     local ContainerCorner = Instance.new("UICorner")
     ContainerCorner.CornerRadius = UDim.new(0, 20)
     ContainerCorner.Parent = container.Container
@@ -192,7 +206,7 @@ function Library:new()
     Top.BackgroundTransparency = 1.000
     Top.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Top.BorderSizePixel = 0
-    Top.Size = UDim2.new(1, 0, 0.08, 0) 
+   Top.Size = UDim2.new(1, 0, 0.08, 0) 
     Top.Image = ""
 
     local Logo = Instance.new("ImageLabel")
@@ -243,8 +257,9 @@ function Library:new()
     tabs.BackgroundTransparency = 1.000
     tabs.BorderColor3 = Color3.fromRGB(0, 0, 0)
     tabs.BorderSizePixel = 0
-    tabs.Position = UDim2.new(0, 0, 0.0915492922, 0)
-    tabs.Size = UDim2.new(0, 209, 0, 386)
+    tabs.Position = UDim2.new(0, 10, 0.0915492922, 0)
+
+    tabs.Size = UDim2.new(0.284, -10, 0.91, 0)
     tabs.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
     tabs.ScrollBarThickness = 0
     tabs.Parent = container.Container
@@ -444,7 +459,7 @@ end)
         tab.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
         tab.BorderColor3 = Color3.fromRGB(0, 0, 0)
         tab.BorderSizePixel = 0
-        tab.Size = UDim2.new(0, 174, 0, 40)
+        tab.Size = UDim2.new(1, 0, 0, 40)
         tab.ZIndex = 2
         tab.AutoButtonColor = false
         tab.Font = Enum.Font.SourceSans
@@ -457,39 +472,33 @@ end)
         tabCorner.CornerRadius = UDim.new(0, 5)
         tabCorner.Parent = tab
 
+        local Logo = Instance.new("ImageLabel")
+        Logo.Name = "Logo"
+        Logo.Parent = tab
+        Logo.AnchorPoint = Vector2.new(0, 0.5)
+        Logo.Position = UDim2.new(0, 8, 0.5, 0)
+        Logo.Size = UDim2.new(0, 17, 0, 17)
+        Logo.BackgroundTransparency = 1
+        Logo.Image = "rbxassetid://17290697757"
+        Logo.ImageTransparency = 0.3
+        Logo.ZIndex = 3
+
         local TextLabel = Instance.new("TextLabel")
         TextLabel.Parent = tab
-        TextLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-        TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        TextLabel.BackgroundTransparency = 1.000
-        TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        TextLabel.BorderSizePixel = 0
-        TextLabel.Position = UDim2.new(0.58965224, 0, 0.5, 0)
-        TextLabel.Size = UDim2.new(0, 124, 0, 15)
-        TextLabel.ZIndex = 3
+        TextLabel.AnchorPoint = Vector2.new(0, 0.5)
+        TextLabel.Position = UDim2.new(0, Logo.Position.X.Offset + Logo.Size.X.Offset + 8, 0.5, 0)  
+
+        TextLabel.Size = UDim2.new(1, -(Logo.Position.X.Offset + Logo.Size.X.Offset + 16), 0, 15)
+        TextLabel.BackgroundTransparency = 1
         TextLabel.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
         TextLabel.Text = self
         TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         TextLabel.TextScaled = true
-        TextLabel.TextSize = 14.000
-        TextLabel.TextTransparency = 0.300
         TextLabel.TextWrapped = true
         TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+        TextLabel.TextTransparency = 0.3
+        TextLabel.ZIndex = 3
 
-        local Logo = Instance.new("ImageLabel")
-        Logo.Name = "Logo"
-        Logo.Parent = tab
-        Logo.AnchorPoint = Vector2.new(0.5, 0.5)
-        Logo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        Logo.BackgroundTransparency = 1.000
-        Logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        Logo.BorderSizePixel = 0
-        Logo.Position = UDim2.new(0.130999997, 0, 0.5, 0)
-        Logo.Size = UDim2.new(0, 17, 0, 17)
-        Logo.ZIndex = 3
-        if self=='Main' then print(1231234312123) end
-        Logo.Image = "rbxassetid://17290697757"
-        Logo.ImageTransparency = 0.3001
 
         local Glow = Instance.new("ImageLabel")
         Glow.Name = "Glow"
@@ -513,7 +522,7 @@ end)
         Fill.BorderColor3 = Color3.fromRGB(0, 0, 0)
         Fill.BorderSizePixel = 0
         Fill.Position = UDim2.new(0.5, 0, 0.5, 0)
-        Fill.Size = UDim2.new(0, 174, 0, 40)
+        Fill.Size = UDim2.new(1, 0, 0, 40)
         Fill.ZIndex = 2
         local UICorner_2 = Instance.new("UICorner")
         UICorner_2.CornerRadius = UDim.new(0, 10)
@@ -686,9 +695,16 @@ end)
             Checkbox.BackgroundColor3 = Color3.fromRGB(22, 23, 27)
             Checkbox.BorderColor3 = Color3.fromRGB(0, 0, 0)
             Checkbox.BorderSizePixel = 0
-            
-            Checkbox.Position = UDim2.new(0.95, 0, 0.5, 0)
-            Checkbox.Size = UDim2.new(0, 20, 0, 20)     
+           
+            if UserInputService.TouchEnabled then
+                            Checkbox.Position = UDim2.new(0.93, 0, 0.5, 0)
+                        Checkbox.Size = UDim2.new(0, 20, 0, 20)     
+            else
+                        Checkbox.Position = UDim2.new(0.95, 0, 0.5, 0)
+                        Checkbox.Size = UDim2.new(0, 20, 0, 20)     
+            end
+
+
 
             local UICorner_2 = Instance.new("UICorner")
             UICorner_2.CornerRadius = UDim.new(0, 4)
