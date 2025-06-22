@@ -543,33 +543,32 @@ end)
         UIGradient.Rotation = 20
         UIGradient.Parent = Fill
 
-local left_section = Instance.new("ScrollingFrame")
-left_section.Name = "LeftSection"
-left_section.Active = true
-left_section.ScrollingEnabled = true
-left_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-left_section.BackgroundTransparency = 1
-left_section.BorderSizePixel = 0
-left_section.Position = UDim2.new(0.325, 0, 0.127, 0)
-left_section.Size = UDim2.new(0.674, 0, 0.873, 0)
-left_section.ScrollBarThickness = 6
-left_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
+		local left_section = Instance.new("ScrollingFrame")
+		left_section.Name = "LeftSection"
+		left_section.Active = true
+		left_section.ScrollingEnabled = true
+		left_section.ClipsDescendants = true  -- добавь это
 
--- Отключаем автоматический CanvasSize, будем задавать вручную
-left_section.AutomaticCanvasSize = Enum.AutomaticSize.None
+		left_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		left_section.BackgroundTransparency = 1
+		left_section.BorderSizePixel = 0
+		left_section.Position = UDim2.new(0.325, 0, 0.127, 0)
+		left_section.Size = UDim2.new(0.674, 0, 0.873, 0)
+		left_section.ScrollBarThickness = 0
+		left_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
 
--- Создаем UIListLayout для упорядочивания элементов
-local layout = Instance.new("UIListLayout")
-layout.Padding = UDim.new(0, 6)
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.Parent = left_section
+		left_section.AutomaticCanvasSize = Enum.AutomaticSize.None
 
--- При изменении содержимого обновляем CanvasSize под высоту контента
-layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    local contentHeight = layout.AbsoluteContentSize.Y
-    -- Делаем CanvasSize немного больше контента (например, +10 пикс)
-    left_section.CanvasSize = UDim2.new(0, 0, 0, contentHeight + 10)
-end)
+		local layout = Instance.new("UIListLayout")
+		layout.Padding = UDim.new(0, 6)
+		layout.SortOrder = Enum.SortOrder.LayoutOrder
+		layout.Parent = left_section
+
+		layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+			local contentHeight = layout.AbsoluteContentSize.Y
+			local minHeight = left_section.AbsoluteSize.Y + 1
+			left_section.CanvasSize = UDim2.new(0, 0, 0, math.max(contentHeight + 10, minHeight))
+		end)
 
 
 
