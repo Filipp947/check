@@ -1,3 +1,16 @@
+getgenv().bringitem=nil
+getgenv().autobond=nil
+getgenv().autowin=nil
+getgenv().auto_win=nil
+getgenv().auto_bond=nil
+local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local t = tick()
+while gui:FindFirstChild("DetailTextLabel", true) and tick() - t < 10 do task.wait() end
+if gui:FindFirstChild("DetailTextLabel", true) then
+    print(">10s")
+    game:GetService("ReplicatedStorage").Remotes.ReturnToLooby:FireServer()
+end
+
 --// library script private
 getgenv().namehub = "Viridian | .gg/getviridian"
 local UserInputService = game:GetService('UserInputService')
@@ -336,15 +349,18 @@ function Library:new()
         end
     end)
 
-    UserInputService.InputBegan:Connect(function(input: InputObject, process: boolean)
-        if process then return end
+local isSettingKeybind = false
+UserInputService.InputBegan:Connect(function(input, process)
+    if process then return end
+    if isSettingKeybind then return end
+    if not Library.exist() then return end
 
-        if not Library.exist() then return end
+    local chosenKey = Library.Flags.fly_key or "H"
+    if input.KeyCode == Enum.KeyCode[chosenKey] then
+        Library.visible(container)
+    end
+end)
 
-        if input.KeyCode == Enum.KeyCode.Insert then
-            Library.visible(container)
-        end
-    end)
 
     mobile_button.MouseButton1Click:Connect(function()
         Library.visible(container)
@@ -1295,109 +1311,123 @@ end
             return Textbox;
         end
         function Module:create_keybind()
-            local section = self.section == 'left' and left_section or right_section
-            local keybind = Instance.new("TextButton")
-            keybind.Name = "Keybind"
-            keybind.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
-            keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            keybind.BorderSizePixel = 0
-            keybind.Position = UDim2.new(-0.0186046511, 0, 0.440860212, 0)
-            keybind.Size = UDim2.new(0, 215, 0, 37)
-            keybind.AutoButtonColor = false
-            keybind.Font = Enum.Font.SourceSans
-            keybind.Text = ""
-            keybind.TextColor3 = Color3.fromRGB(0, 0, 0)
-            keybind.TextSize = 14.000
-            keybind.Parent = section
+        local section = self.section == 'left' and left_section or right_section
+        local keybind = Instance.new("TextButton")
+        keybind.Name = "Keybind"
+        keybind.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
+        keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        keybind.BorderSizePixel = 0
+        keybind.Position = UDim2.new(0.02, 0, 0, 37)
+        keybind.Size = UDim2.new(0.96, 0, 0, 50)
+        keybind.AutoButtonColor = false
+        keybind.Font = Enum.Font.SourceSans
+        keybind.Text = ""
+        keybind.TextColor3 = Color3.fromRGB(0, 0, 0)
+        keybind.TextSize = 14.000
+        keybind.Parent = section
 
-            local UICorner = Instance.new("UICorner")
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 10)
+        UICorner.Parent = keybind
 
-            UICorner.CornerRadius = UDim.new(0, 10)
-            UICorner.Parent = keybind
-            
-            local TextLabel = Instance.new("TextLabel")
-            TextLabel.Parent = keybind
-            TextLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-            TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            TextLabel.BackgroundTransparency = 1.000
-            TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            TextLabel.BorderSizePixel = 0
-            TextLabel.Position = UDim2.new(0.424475819, 0, 0.5, 0)
-            TextLabel.Size = UDim2.new(0, 155, 0, 15)
-            TextLabel.ZIndex = 2
-            TextLabel.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
-            TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-            TextLabel.TextScaled = true
-            TextLabel.TextSize = 14.000
-            TextLabel.TextWrapped = true
-            TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+        local TextLabel = Instance.new("TextLabel")
+        TextLabel.Parent = keybind
+        TextLabel.AnchorPoint = Vector2.new(0, 0.5)
+        TextLabel.Position = UDim2.new(0, 17, 0.5, 0) 
+        TextLabel.Size = UDim2.new(1, -20, 0, 15) 
+        TextLabel.BackgroundTransparency = 1.0
+        TextLabel.BorderSizePixel = 0
 
-            local Box = Instance.new("Frame")
-            Box.Name = "Box"
-            Box.Parent = keybind
-            Box.AnchorPoint = Vector2.new(0.5, 0.5)
-            Box.BackgroundColor3 = Color3.fromRGB(22, 23, 27)
-            Box.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            Box.BorderSizePixel = 0
-            Box.Position = UDim2.new(0.875459313, 0, 0.472972959, 0)
-            Box.Size = UDim2.new(0, 27, 0, 21)
-
-            local UICorner_2 = Instance.new("UICorner")
-            UICorner_2.CornerRadius = UDim.new(0, 4)
-            UICorner_2.Parent = Box
+        TextLabel.FontFace = Font.new(
+            "rbxasset://fonts/families/Montserrat.json",
+            Enum.FontWeight.SemiBold
+        )
+        TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TextLabel.TextScaled = true
+        TextLabel.TextWrapped = true
+        TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+        TextLabel.Text = self.name
 
             
-            local TextLabel_2 = Instance.new("TextLabel")
-            TextLabel_2.Parent = Box
-            TextLabel_2.AnchorPoint = Vector2.new(0.5, 0.5)
-            TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            TextLabel_2.BackgroundTransparency = 1.000
-            TextLabel_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
-            TextLabel_2.BorderSizePixel = 0
-            TextLabel_2.Position = UDim2.new(0.630466938, 0, 0.5, 0)
-            TextLabel_2.Size = UDim2.new(0, 29, 0, 15)
-            TextLabel_2.ZIndex = 2
-            TextLabel_2.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
-            TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
-            TextLabel_2.TextScaled = true
-            TextLabel_2.TextSize = 14.000
-            TextLabel_2.TextWrapped = true
+        local Box = Instance.new("Frame")
+        Box.Name = "Box"
+        Box.Parent = keybind
+        Box.AnchorPoint = Vector2.new(1, 0.5) 
+        Box.BackgroundColor3 = Color3.fromRGB(22, 23, 27)
+        Box.BorderSizePixel = 0
+        Box.Position = UDim2.new(0.95, 0, 0.5, 0)
+        Box.Size = UDim2.new(0, 60, 0, 27)
+        local UICorner_2 = Instance.new("UICorner")
+        UICorner_2.CornerRadius = UDim.new(0, 4)
+        UICorner_2.Parent = Box
+        
 
-            keybind.TextLabel.Text = self.name
-            keybind.Box.TextLabel.Text = self.keycode.Name
+        local TextLabel_2 = Instance.new("TextLabel")
+        TextLabel_2.Parent = Box
+        TextLabel_2.AnchorPoint = Vector2.new(0.5, 0.5)
+        TextLabel_2.BackgroundTransparency = 1.0
+        TextLabel_2.BorderSizePixel = 0
+        TextLabel_2.Position = UDim2.new(0.5, 0, 0.5, 0)
+        TextLabel_2.Size = UDim2.new(1, -4, 1, -4)
+        TextLabel_2.FontFace = Font.new(
+            "rbxasset://fonts/families/Montserrat.json",
+            Enum.FontWeight.SemiBold
+        )
+        TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TextLabel_2.TextScaled = false
+        TextLabel_2.TextSize = 14 
+        TextLabel_2.TextWrapped = false
+        TextLabel_2.TextXAlignment = Enum.TextXAlignment.Center
+        TextLabel_2.TextYAlignment = Enum.TextYAlignment.Center
 
-            if not Library.Flags[self.flag] then
-                Library.Flags[self.flag] = self.keycode.Name
-            end
+        local defaultKey = self.keycode and self.keycode.Name or "H"
+        Library.Flags[self.flag] = Library.Flags[self.flag] or defaultKey
+        TextLabel_2.Text = Library.Flags[self.flag]
 
-            keybind.MouseButton1Click:Connect(function()
-                keybind.Box.TextLabel.Text = '...'
-                local a,b = UserInputService.InputBegan:Wait();
-                if a.KeyCode.Name ~= 'Unknown' then
-                    keybind.Box.TextLabel.Text = a.KeyCode.Name
-                    Library.Flags[self.flag] = a.KeyCode.Name
-                    Library.save_flags()
-                end
-            end)
-
-            UserInputService.InputBegan:Connect(function(current, pressed)
-                if not pressed then
-                    if current.KeyCode.Name == Library.Flags[self.flag] then
-                        self.callback(Library.Flags[self.flag])
-                    end
-                end
-            end)
+        local function updateKeybindSize()
+            local textWidth = TextLabel_2.TextBounds.X
+            local PADDING_X = 15
+            Box.Size = UDim2.new(0, textWidth + PADDING_X, 0, Box.Size.Y.Offset)
         end
-        return Module
+
+        TextLabel_2:GetPropertyChangedSignal("Text"):Connect(updateKeybindSize)
+        updateKeybindSize()
+
+    keybind.MouseButton1Click:Connect(function()
+    isSettingKeybind = true
+    TextLabel_2.Text = "..."
+    if keybindListener then
+        keybindListener:Disconnect()
+        keybindListener = nil
     end
-    return Tab
-end
+
+    local a = UserInputService.InputBegan:Wait()
+    if a.UserInputType == Enum.UserInputType.Keyboard and a.KeyCode ~= Enum.KeyCode.Unknown then
+        Library.Flags[self.flag] = a.KeyCode.Name
+        Library.save_flags()
+        TextLabel_2.Text = a.KeyCode.Name
+    end
+
+    game:GetService("RunService").RenderStepped:Wait()
+    isSettingKeybind = false 
+
+    keybindListener = UserInputService.InputBegan:Connect(function(current, pressed)
+        if pressed then return end
+        if current.UserInputType ~= Enum.UserInputType.Keyboard then return end
+    
+    end)
+end)
+
+            end
+            return Module
+        end
+        return Tab
+    end
 
 local main = Library.new()
 local tab = main.create_tab('Auto')
-
 local tab1 = main.create_tab('Main')
-
+local tab2 = main.create_tab('Settings')
 
 tab.create_title({
     name = 'Farm scripts can only be disabled by restarting Roblox',
@@ -1528,12 +1558,20 @@ tab1.create_dropdown({
     section = 'left',
 
     option = 'Bond',
-    options = {'Bond', 'Gold', 'Silver', 'Coal', 'Brain', 'Jade', 'Strange', 'Rifle', 'Shotgun'},
+    options = {'Bond', 'Gold', 'Silver', 'Coal', 'Brain', 'Jade', 'Vampire', 'Strange', 'Rifle', 'Shotgun'},
 
     callback = function(value: string)
         getgenv().bringitem=value
     end
 })
-
+tab2.create_keybind({
+    name = "Toggle Ui",
+    flag = "fly_key",
+    section = "left",
+    keycode = Enum.KeyCode.H,
+    callback = function(key)
+        print("Keybind pressed:", key)
+    end
+})
 
 return library
