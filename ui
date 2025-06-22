@@ -85,17 +85,27 @@ end
 Library.load_flags()
 Library.clear()
 
+
 function Library:open()
     self.Container.Visible = true
     self.Shadow.Visible = true
     self.Mobile.Modal = true
 
+    local containerSize, shadowSize
+    if UserInputService.TouchEnabled then
+        containerSize = UDim2.new(0.7, 0, 0.7, 0)
+        shadowSize = UDim2.new(0.7, 0, 0.7, 0) 
+    else
+        containerSize = UDim2.new(0.35, 0, 0.35, 0)
+        shadowSize = UDim2.new(0.35, 0, 0.35, 0) 
+    end
+
     TweenService:Create(self.Container, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-        Size = UDim2.new(0, 699, 0, 426)
+        Size = containerSize
     }):Play()
 
     TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-        Size = UDim2.new(0, 776, 0, 509)
+        Size = shadowSize
     }):Play()
 end
 
@@ -166,13 +176,13 @@ function Library:new()
     Shadow.BackgroundTransparency = 1.000
     Shadow.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Shadow.BorderSizePixel = 0
-    Shadow.Position = UDim2.new(0.508668244, 0, 0.5, 0)
-    if UserInputService.TouchEnabled then
+	Shadow.Position = UDim2.new(0.508668244, 0, 0.5, 0)
+	if UserInputService.TouchEnabled then
     Shadow.Size = UDim2.new(0.7, 0, 0.7, 0)
-    else
-        
-        Shadow.Size = UDim2.new(0.35, 0, 0.35, 0)
-    end
+	else
+		
+		Shadow.Size = UDim2.new(0.35, 0, 0.35, 0)
+	end
 
     Shadow.ZIndex = 0
     Shadow.Image = "rbxassetid://17290899982"
@@ -185,14 +195,14 @@ function Library:new()
     Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
     Container.BorderSizePixel = 0
     Container.ClipsDescendants = true
-    Container.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Container.Position = UDim2.new(0.5, 0, 0.5, 0)
 
-    if UserInputService.TouchEnabled then
-        Container.Size = UDim2.new(0.7, 0, 0.7, 0)
-    else
-    
-        Container.Size = UDim2.new(0.35, 0, 0.35, 0)
-    end
+	if UserInputService.TouchEnabled then
+		Container.Size = UDim2.new(0.7, 0, 0.7, 0)
+	else
+	
+		Container.Size = UDim2.new(0.35, 0, 0.35, 0)
+	end
 
     
     local ContainerCorner = Instance.new("UICorner")
@@ -257,9 +267,9 @@ function Library:new()
     tabs.BackgroundTransparency = 1.000
     tabs.BorderColor3 = Color3.fromRGB(0, 0, 0)
     tabs.BorderSizePixel = 0
-    tabs.Position = UDim2.new(0, 10, 0.0915492922, 0)
+	tabs.Position = UDim2.new(0, 10, 0.0915492922, 0)
 
-    tabs.Size = UDim2.new(0.284, -10, 0.91, 0)
+	tabs.Size = UDim2.new(0.284, -10, 0.91, 0)
     tabs.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
     tabs.ScrollBarThickness = 0
     tabs.Parent = container.Container
@@ -472,32 +482,32 @@ end)
         tabCorner.CornerRadius = UDim.new(0, 5)
         tabCorner.Parent = tab
 
-        local Logo = Instance.new("ImageLabel")
-        Logo.Name = "Logo"
-        Logo.Parent = tab
-        Logo.AnchorPoint = Vector2.new(0, 0.5)
-        Logo.Position = UDim2.new(0, 8, 0.5, 0)
-        Logo.Size = UDim2.new(0, 17, 0, 17)
-        Logo.BackgroundTransparency = 1
-        Logo.Image = "rbxassetid://17290697757"
-        Logo.ImageTransparency = 0.3
-        Logo.ZIndex = 3
+		local Logo = Instance.new("ImageLabel")
+		Logo.Name = "Logo"
+		Logo.Parent = tab
+		Logo.AnchorPoint = Vector2.new(0, 0.5)
+		Logo.Position = UDim2.new(0, 8, 0.5, 0)
+		Logo.Size = UDim2.new(0, 17, 0, 17)
+		Logo.BackgroundTransparency = 1
+		Logo.Image = "rbxassetid://17290697757"
+		Logo.ImageTransparency = 0.3
+		Logo.ZIndex = 3
 
-        local TextLabel = Instance.new("TextLabel")
-        TextLabel.Parent = tab
-        TextLabel.AnchorPoint = Vector2.new(0, 0.5)
-        TextLabel.Position = UDim2.new(0, Logo.Position.X.Offset + Logo.Size.X.Offset + 8, 0.5, 0)  
+		local TextLabel = Instance.new("TextLabel")
+		TextLabel.Parent = tab
+		TextLabel.AnchorPoint = Vector2.new(0, 0.5)
+		TextLabel.Position = UDim2.new(0, Logo.Position.X.Offset + Logo.Size.X.Offset + 8, 0.5, 0)  
 
-        TextLabel.Size = UDim2.new(1, -(Logo.Position.X.Offset + Logo.Size.X.Offset + 16), 0, 15)
-        TextLabel.BackgroundTransparency = 1
-        TextLabel.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
-        TextLabel.Text = self
-        TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TextLabel.TextScaled = true
-        TextLabel.TextWrapped = true
-        TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-        TextLabel.TextTransparency = 0.3
-        TextLabel.ZIndex = 3
+		TextLabel.Size = UDim2.new(1, -(Logo.Position.X.Offset + Logo.Size.X.Offset + 16), 0, 15)
+		TextLabel.BackgroundTransparency = 1
+		TextLabel.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
+		TextLabel.Text = self
+		TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TextLabel.TextScaled = true
+		TextLabel.TextWrapped = true
+		TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+		TextLabel.TextTransparency = 0.3
+		TextLabel.ZIndex = 3
 
 
         local Glow = Instance.new("ImageLabel")
@@ -533,29 +543,35 @@ end)
         UIGradient.Rotation = 20
         UIGradient.Parent = Fill
 
-        local left_section = Instance.new("ScrollingFrame")
-        left_section.Name = "LeftSection"
-        left_section.Active = true
-        left_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        left_section.BackgroundTransparency = 1
-        left_section.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        left_section.BorderSizePixel = 0
-        left_section.Position = UDim2.new(0.325, 0, 0.127, 0)
-        left_section.Size = UDim2.new(0.674, 0, 0.873, 0)
-        left_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
-        left_section.ScrollBarThickness = 0
-        left_section.AutomaticCanvasSize = Enum.AutomaticSize.Y 
+local left_section = Instance.new("ScrollingFrame")
+left_section.Name = "LeftSection"
+left_section.Active = true
+left_section.ScrollingEnabled = true
+left_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+left_section.BackgroundTransparency = 1
+left_section.BorderSizePixel = 0
+left_section.Position = UDim2.new(0.325, 0, 0.127, 0)
+left_section.Size = UDim2.new(0.674, 0, 0.873, 0)
+left_section.ScrollBarThickness = 6
+left_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
 
-        local layout = Instance.new("UIListLayout")
-        layout.Padding = UDim.new(0, 6)
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Parent = left_section
+-- Отключаем автоматический CanvasSize, будем задавать вручную
+left_section.AutomaticCanvasSize = Enum.AutomaticSize.None
 
-        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            local contentHeight = layout.AbsoluteContentSize.Y
-            left_section.CanvasSize = UDim2.new(0, 0, 0, math.max(contentHeight + 10, left_section.AbsoluteSize.Y))
-            tabs.CanvasSize = UDim2.new(0, 0, 0, math.max(contentHeight + 10, tabs.AbsoluteSize.Y))
-        end)
+-- Создаем UIListLayout для упорядочивания элементов
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 6)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = left_section
+
+-- При изменении содержимого обновляем CanvasSize под высоту контента
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    local contentHeight = layout.AbsoluteContentSize.Y
+    -- Делаем CanvasSize немного больше контента (например, +10 пикс)
+    left_section.CanvasSize = UDim2.new(0, 0, 0, contentHeight + 10)
+end)
+
+
 
 
 
@@ -696,13 +712,13 @@ end)
             Checkbox.BorderColor3 = Color3.fromRGB(0, 0, 0)
             Checkbox.BorderSizePixel = 0
            
-            if UserInputService.TouchEnabled then
-                            Checkbox.Position = UDim2.new(0.93, 0, 0.5, 0)
-                        Checkbox.Size = UDim2.new(0, 20, 0, 20)     
-            else
-                        Checkbox.Position = UDim2.new(0.95, 0, 0.5, 0)
-                        Checkbox.Size = UDim2.new(0, 20, 0, 20)     
-            end
+			if UserInputService.TouchEnabled then
+							Checkbox.Position = UDim2.new(0.93, 0, 0.5, 0)
+						Checkbox.Size = UDim2.new(0, 20, 0, 20)     
+			else
+						Checkbox.Position = UDim2.new(0.95, 0, 0.5, 0)
+						Checkbox.Size = UDim2.new(0, 20, 0, 20)     
+			end
 
 
 
@@ -1114,7 +1130,7 @@ end
                 local BASE_WIDTH = 0.96
                 local CLOSED_HEIGHT = 50
                 local OPTION_HEIGHT = 23
-
+				
             function Dropdown:open()
             open = true
 
@@ -1188,38 +1204,57 @@ end
             end
 
 
-                function Dropdown:update()
-                    Dropdown.clear()
-                    
+          local TweenService = game:GetService("TweenService")
 
-                    list_size = 0
-                    for _, value in self.options do
-                        list_size += OPTION_HEIGHT
+		function Dropdown:update()
+			Dropdown.clear()
 
-                        local new_option = option:Clone()
-                        new_option.Parent = dropdown.Box.Options
-                        new_option.Text = value
+			list_size = 0
+			for _, value in self.options do
+				list_size += OPTION_HEIGHT
 
-                        if value == Library.Flags[self.flag] then
-                            new_option.TextTransparency = 0
-                        end
+				local new_option = option:Clone()
+				new_option.Parent = dropdown.Box.Options
+				new_option.Text = value
 
-                        new_option.MouseButton1Click:Connect(function()
-                            Library.Flags[self.flag] = value
+				if value == Library.Flags[self.flag] then
+					new_option.TextTransparency = 0
+				else
+					new_option.TextTransparency = 0.5
+				end
 
-                            if list_open then
-                                dropdown.Box.TextLabel.Text = Library.Flags[self.flag]
-                            end
-                            self.callback(Library.Flags[self.flag])
-                            Library.save_flags()
+				new_option.MouseEnter:Connect(function()
+					TweenService:Create(new_option, TweenInfo.new(0.3), {
+						TextTransparency = 0  
+					}):Play()
+				end)
 
-                            Dropdown.select_option({
-                                new_option = new_option,
-                                flag = self.flag
-                            })
-                        end)
-                    end
-                end
+				new_option.MouseLeave:Connect(function()
+					if new_option.Text ~= Library.Flags[self.flag] then
+						TweenService:Create(new_option, TweenInfo.new(0.3), {
+							TextTransparency = 0.5 
+						}):Play()
+					end
+				end)
+
+				new_option.MouseButton1Click:Connect(function()
+					Library.Flags[self.flag] = value
+
+					if list_open then
+						dropdown.Box.TextLabel.Text = Library.Flags[self.flag]
+					end
+					self.callback(Library.Flags[self.flag])
+					Library.save_flags()
+
+					Dropdown.select_option({
+						new_option = new_option,
+						flag = self.flag
+					})
+				end)
+			end
+		end
+
+
 
 
 
