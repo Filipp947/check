@@ -10,7 +10,16 @@ if gui:FindFirstChild("DetailTextLabel", true) then
     print(">10s")
     game:GetService("ReplicatedStorage").Remotes.ReturnToLooby:FireServer()
 end
+local names = {"golden", "default", "cattle", "armor", "wooden", "ghost", "passenger"}
+local obj
 
+for _, name in ipairs(names) do
+    local found = workspace:FindFirstChild(name)
+    if found then
+        obj = found
+        break
+    end
+end
 --// library script private
 if not getgenv().moon then
 getgenv().namehub = "Viridian | .gg/getviridian" else
@@ -1481,65 +1490,10 @@ end)
 local main = Library.new()
 local tab = main.create_tab('Auto')
 
-if not workspace:FindFirstChild("Ads") then
+if obj and obj:IsA("Model") then
 local tab1 = main.create_tab('Main')
-local tab2 = main.create_tab('Teleports') end
-local tab3 = main.create_tab('Settings')
-
-tab.create_title({
-    name = 'Farm scripts can only be disabled by restarting Roblox',
-    section = 'left'
-})
-tab.create_toggle({
-    name = 'Auto Bond',
-    flag = 'autobond',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        if state then
-             if getgenv().moon then
-        getgenv().auto_bond=true  else getgenv().autobond=true end
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
-    end
-})
-tab.create_toggle({
-    name = 'Auto Win',
-    flag = 'autowin',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-    if state then
-                if getgenv().moon then
-
-        getgenv().auto_win=true else getgenv().autowin=true end
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
-    end
-})
-
-
-tab.create_toggle({
-    name = 'Auto Bond & Auto Win',
-    flag = 'autobond&autowin',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-    if state then
-        if getgenv().moon then
-            getgenv().auto_bond=true
-            getgenv().auto_win=true
-    else
-        getgenv().autobond=true
-        getgenv().autowin=true end
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
-    end
-})
-if not workspace:FindFirstChild("Ads") then
+local tab2 = main.create_tab('Teleports')
+ 
 tab1.create_title({
     name = 'Fly',
     section = 'left'
@@ -1637,8 +1591,64 @@ tab2.create_title({
     section = 'left'
 })
 
-
 end
+local tab3 = main.create_tab('Settings')
+
+tab.create_title({
+    name = 'Farm scripts can only be disabled by restarting Roblox',
+    section = 'left'
+})
+tab.create_toggle({
+    name = 'Auto Bond',
+    flag = 'autobond',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+        if state then
+             if getgenv().moon then
+        getgenv().auto_bond=true  else getgenv().autobond=true end
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
+    end
+})
+tab.create_toggle({
+    name = 'Auto Win',
+    flag = 'autowin',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+    if state then
+                if getgenv().moon then
+
+        getgenv().auto_win=true else getgenv().autowin=true end
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
+    end
+})
+
+
+tab.create_toggle({
+    name = 'Auto Bond & Auto Win',
+    flag = 'autobond&autowin',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+    if state then
+        if getgenv().moon then
+            getgenv().auto_bond=true
+            getgenv().auto_win=true
+    else
+        getgenv().autobond=true
+        getgenv().autowin=true end
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
+    end
+})
+
+
 tab3.create_keybind({
     name = "Toggle Ui",
     flag = "fly_key",
