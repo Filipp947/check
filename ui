@@ -815,6 +815,83 @@ end)
                 self.callback(Library.Flags[self.flag])
             end)
         end
+            function Module:create_button(config)
+        
+
+            local section = self.section == "left" and left_section or right_section
+
+            local button = Instance.new("TextButton")
+            button.Name = "Button"
+            button.Parent = section
+            button.BackgroundColor3 = Color3.fromRGB(27,28,33)
+            button.BorderSizePixel = 0
+            button.Size = UDim2.new(0.96, 0, 0, 50)
+            button.Position = UDim2.new(0.02, 0, 0, 37)
+            button.AutoButtonColor = false
+            button.Text = ""
+
+            local UICorner = Instance.new("UICorner")
+            UICorner.CornerRadius = UDim.new(0,10)
+            UICorner.Parent = button
+
+            local label = Instance.new("TextLabel")
+            label.Parent = button
+            label.BackgroundTransparency = 1
+            label.Position = UDim2.new(0,17,0.5,0)
+            label.AnchorPoint = Vector2.new(0,0.5)
+            label.Size = UDim2.new(1,-20,0,15)
+            label.FontFace = Font.new(
+                "rbxasset://fonts/families/Montserrat.json",
+                Enum.FontWeight.SemiBold
+            )
+            label.TextColor3 = Color3.fromRGB(255,255,255)
+            label.TextScaled = true
+            label.TextXAlignment = Enum.TextXAlignment.Left
+            label.Text = self.name
+            local TweenService = game:GetService("TweenService")
+
+            button.AnchorPoint = Vector2.new(0.5, 0.5)
+            button.Position = UDim2.new(0.5, 0, 0, 62)
+
+            local originalSize = UDim2.new(0.96, 0, 0, 50)
+            local pressedSize = UDim2.new(0.94, 0, 0, 48)
+
+            local originalColor = Color3.fromRGB(27,28,33)
+            local pressedColor = originalColor:lerp(Color3.fromRGB(200,200,200), 0.08) 
+
+            local pressInfo = TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+            local releaseInfo = TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+            button.MouseButton1Click:Connect(function()
+                local pressTween = TweenService:Create(
+                    button,
+                    pressInfo,
+                    {Size = pressedSize, BackgroundColor3 = pressedColor}
+                )
+                pressTween:Play()
+
+                pressTween.Completed:Connect(function()
+                    local releaseTween = TweenService:Create(
+                        button,
+                        releaseInfo,
+                        {Size = originalSize, BackgroundColor3 = originalColor}
+                    )
+                    releaseTween:Play()
+                end)
+
+                if self.flag then
+                    Library.Flags[self.flag] = not Library.Flags[self.flag]
+                    Library.save_flags()
+                    self.callback(Library.Flags[self.flag])
+                else
+                    self.callback()
+                end
+            end)
+
+
+
+            return button
+        end
 
         
         function Module:update_slider()
@@ -1251,6 +1328,7 @@ end
 
                 new_option.MouseButton1Click:Connect(function()
                     Library.Flags[self.flag] = value
+                
 
                     if list_open then
                         dropdown.Box.TextLabel.Text = Library.Flags[self.flag]
@@ -1271,7 +1349,7 @@ end
 
 
             if not Library.Flags[self.flag] and self.option then
-                Library.Flags[self.flag] = self.option
+                Library.Flags[self.flag] = self.option 
             end
 
             if Library.Flags[self.flag] then
@@ -1555,7 +1633,7 @@ tab1.create_title({
     section = 'left'
 })
 
-tab1.create_toggle({
+tab1.create_button({
     name = 'Bring',
     flag = 'bring',
 
@@ -1563,10 +1641,10 @@ tab1.create_toggle({
     enabled = false,
 
     callback = function(state: boolean)
-        if state then
+
         if not getgenv().bringitem then getgenv().bringitem='Bond' end
         loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))()
-        end
+
     end
 })
 
@@ -1582,15 +1660,349 @@ tab1.create_dropdown({
         getgenv().bringitem=value
     end
 })
+
+local teleportLocations = {
+    ["Spawn"] = CFrame.new(56.6396217, 3.24999976, 29936.3516),
+    ["10 KM"] = CFrame.new(-160.576843, 2.99617577, 19913.252),
+    ["20 KM"] = CFrame.new(-556.92572, 2.98922157, 9956.79883),
+    ["30 KM"] = CFrame.new(-569.779663, 2.99999976, 47.5958443),
+    ["40 KM"] = CFrame.new(-184.494064, 3.14674306, -9899.91797),
+    ["50 KM"] = CFrame.new(55.228714, 3.19885039, -19842.3789),
+    ["60 KM"] = CFrame.new(-199.620743, 3.14927387, -29733.9453),
+    ["70 KM"] = CFrame.new(-577.781921, 3.49909163, -39654.2148),
+    ["End"] = CFrame.new(-424.449, 26.055, -49040.656)
+}
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local gameWorkspace = game:GetService("Workspace") 
+local function findClosestVehicleSeat(position)
+    local closestSeat = nil
+    local minDistance = math.huge
+
+    for _, seat in ipairs(gameWorkspace:GetDescendants()) do
+        if seat:IsA("VehicleSeat") then
+            local distance = (position - seat.Position).Magnitude
+            if distance < minDistance then
+                minDistance = distance
+                closestSeat = seat
+            end
+        end
+    end
+    return closestSeat
+end
+
+local function teleportToLocation(locationName)
+    local Player = game.Players.LocalPlayer
+    if not Player.Character then
+        Player.CharacterAdded:Wait()
+    end
+    local Character = Player.Character
+    if Character and Character:FindFirstChild("HumanoidRootPart") then
+        local HRP = Character.HumanoidRootPart
+        local HUM = Character:FindFirstChildOfClass("Humanoid")
+        
+        local originalWalkSpeed = HUM.WalkSpeed
+        HUM.WalkSpeed = 0
+        HRP.CFrame = teleportLocations[locationName]
+        HRP.Anchored = true
+
+        task.wait(2)
+
+        local fseat = findClosestVehicleSeat(HRP.Position)
+    
+        if fseat then
+            HRP.CFrame = fseat.CFrame + Vector3.new(0, 3, 0)
+            task.wait(0.15)
+            HRP.Anchored = false
+            task.wait(0.5)
+            fseat:Sit(HUM)
+        else
+            HRP.Anchored = false
+            warn("No seat found near location: " .. locationName)
+        end
+        
+        task.wait(1)
+        HUM.WalkSpeed = originalWalkSpeed
+        if locationName=='End' then HUM:ChangeState(Enum.HumanoidStateType.Jumping) end
+    end
+end
 tab2.create_title({
-    name = 'Soon... :)',
+    name = 'Main',
     section = 'left'
 })
+tab2.create_button({
+    name = 'TP To Train',
+    flag = 'tptobase',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+ loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/TPtotrain.txt"))()
+    end
+})
+tab2.create_button({
+    name = 'TP To End',
+    flag = 'tptobase',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+  local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+local humanoid = character:WaitForChild("Humanoid")
+        getgenv().tptoend=true
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/fly"))()
+        while not getgenv().tptoend1 do
+            wait(.1) end
+        
+        hrp.CFrame = CFrame.new(-424.449, 29.055, -49040.656)
+         local character = player.Character
+    if character then
+        local root = character:FindFirstChild("HumanoidRootPart")
+        if root then
+            for _, obj in ipairs(root:GetChildren()) do
+                if obj:IsA("BodyGyro") or obj:IsA("BodyVelocity") then
+                    obj:Destroy()
+                end
+            end
+        end
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.JumpPower = 50
+            humanoid.AutoJumpEnabled = true
+        end
+    end
+        wait(1)
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping) 
+
+    end
+})
 tab2.create_title({
-    name = 'govorgub was here',
+    name = 'Bases',
     section = 'left'
 })
 
+tab2.create_dropdown({
+    name = 'Select base',
+    flag = 'selectbase',
+    section = 'left',
+
+    option = 'Spawn',
+    options = {'Spawn', '10 KM', '20 KM', '30 KM', '40 KM', '50 KM', '60 KM', '70 KM'},
+
+    callback = function(value: string)
+        getgenv().selectedLocation=value
+    end
+})
+tab2.create_button({
+    name = 'Teleport to Selected Base',
+    flag = 'tptobase',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+           teleportToLocation(getgenv().selectedLocation)
+    end
+})
+tab2.create_title({
+    name = 'Structures',
+    section = 'left'
+})
+
+tab2.create_button({
+    name = 'Tp To Tesla Lab',
+    flag = 'tptobase1',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+        if state then
+           local Player = game.Players.LocalPlayer
+                if not Player.Character then
+                    Player.CharacterAdded:Wait()
+                end
+                local Character = Player.Character
+                if Character and Character:FindFirstChild("HumanoidRootPart") then
+                    local HRP = Character.HumanoidRootPart
+                    local HUM = Character:FindFirstChildOfClass("Humanoid")
+                    
+                    local originalWalkSpeed = HUM.WalkSpeed
+                    
+                    HUM.WalkSpeed = 0
+                    
+                    local Generator = workspace:WaitForChild("TeslaLab"):WaitForChild("Generator")
+                    local modelPosition = Generator:GetPivot().Position
+                    HRP:PivotTo(CFrame.new(modelPosition + Vector3.new(0, 5, 0)))
+                    HRP.Anchored = true
+                    
+                    task.wait(2) 
+                  
+                    local RuntimeItems = workspace:WaitForChild("RuntimeItems")
+                    local function findClosestAvailableSeat()
+                        local closestSeat = nil
+                        local minDistance = math.huge
+                        local playerPos = HRP.Position
+                        
+                        for _, chair in pairs(RuntimeItems:GetChildren()) do
+                            if chair:IsA("Model") and chair.Name == "Chair" then
+                                local seat = chair:FindFirstChild("Seat")
+                                if seat and seat:IsA("Seat") and seat.Occupant == nil then
+                                    local seatPos = seat.Position
+                                    local distance = (seatPos - playerPos).Magnitude
+                                    if distance < minDistance then
+                                        minDistance = distance
+                                        closestSeat = seat
+                                    end
+                                end
+                            end
+                        end
+                        return closestSeat
+                    end
+                    
+                    local seat = findClosestAvailableSeat()
+                    if seat then
+                        HRP.Anchored = true
+                        HRP:PivotTo(seat.CFrame + Vector3.new(0, 3, 0)) 
+                        
+                        task.delay(0.15, function()
+                            if HRP and HRP.Anchored then
+                                HRP.Anchored = false
+                            end
+                        end)
+                        
+                        task.delay(0.1, function()
+                            if HRP and HRP.Anchored then
+                                HRP.Anchored = false
+                            end
+                        end)
+                        
+                        task.wait(0.5)
+                        seat:Sit(HUM) 
+                    else
+                        HRP.Anchored = false 
+                    end
+                    
+                    task.wait(1)
+                    HUM.WalkSpeed = originalWalkSpeed
+                end
+
+        end
+    end
+})
+tab2.create_button({
+    name = 'TP To Castle',
+    flag = 'tptobase',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+             loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/FASTCASTLE.txt"))()
+    end
+})
+tab2.create_button({
+    name = 'TP To Fort',
+    flag = 'tptobase',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+             loadstring(game:HttpGet("https://raw.githubusercontent.com/Shade-vex/KJ/refs/heads/main/Tpfort.lua.txt"))()
+    end
+})
+tab2.create_button({
+    name = 'TP To Sterling',
+    flag = 'tptobase',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+    getgenv().tptosterling=true
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/fly"))()
+
+                while not getgenv().tptosterling1 do
+            wait(.1) end
+        
+       
+
+  local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+local humanoid = character:WaitForChild("Humanoid")
+local destination = Vector3.new(-424.449, 26.055, -49040.656)
+local speed = 8000
+local reached = false
+local teleportOnSterling = false
+
+local function findSterling()
+    return workspace:FindFirstChild("Sterling", true)
+end
+
+local function flyToDestination()
+    local connection
+
+    connection = RunService.RenderStepped:Connect(function(dt)
+        if reached or teleportOnSterling then
+            connection:Disconnect()
+            return
+        end
+
+        local sterling = findSterling()
+        if sterling then
+            teleportOnSterling = true
+            hrp.CFrame = CFrame.new(sterling:GetPivot().Position)
+            wait(.3)
+             humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+              local character = player.Character
+    if character then
+        local root = character:FindFirstChild("HumanoidRootPart")
+        if root then
+            for _, obj in ipairs(root:GetChildren()) do
+                if obj:IsA("BodyGyro") or obj:IsA("BodyVelocity") then
+                    obj:Destroy()
+                end
+            end
+        end
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.JumpPower = 50
+            humanoid.AutoJumpEnabled = true
+        end
+    end
+            connection:Disconnect()
+            return
+        end
+
+        local direction = (destination - hrp.Position)
+        local distance = direction.Magnitude
+
+        if distance < 1 then
+            reached = true
+            connection:Disconnect()
+            return
+        end
+
+        local move = direction.Unit * speed * dt
+        if move.Magnitude > distance then
+            move = direction
+        end
+
+        hrp.CFrame = hrp.CFrame + move
+    end)
+end
+
+flyToDestination()
+    end 
+})
 end
 local tab3 = main.create_tab('Settings')
 
@@ -1598,7 +2010,7 @@ tab.create_title({
     name = 'Farm scripts can only be disabled by restarting Roblox',
     section = 'left'
 })
-tab.create_toggle({
+tab.create_button({
     name = 'Auto Bond',
     flag = 'autobond',
 
@@ -1608,11 +2020,11 @@ tab.create_toggle({
     callback = function(state: boolean)
         if state then
              if getgenv().moon then
-        getgenv().auto_bond=true  else getgenv().autobond=true end
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
+            getgenv().auto_bond=true  else getgenv().autobond=true end
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
     end
 })
-tab.create_toggle({
+tab.create_button({
     name = 'Auto Win',
     flag = 'autowin',
 
@@ -1629,7 +2041,7 @@ tab.create_toggle({
 })
 
 
-tab.create_toggle({
+tab.create_button({
     name = 'Auto Bond & Auto Win',
     flag = 'autobond&autowin',
 
