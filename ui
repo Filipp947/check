@@ -2003,6 +2003,17 @@ end
 flyToDestination()
     end 
 })
+tab2.create_button({
+    name = 'TP To Still Water Prison',
+    flag = 'tptobase',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+             loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/stillwater"))()
+    end
+})
 end
 local tab3 = main.create_tab('Settings')
 
