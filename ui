@@ -1583,7 +1583,6 @@ tab.create_button({
     enabled = false,
 
     callback = function(state: boolean)
-
         loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/autotesla"))()
 	end
 })
