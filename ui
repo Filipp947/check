@@ -1583,9 +1583,9 @@ tab.create_button({
     enabled = false,
 
     callback = function(state: boolean)
-    if state then
+
         loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/autotesla"))()
-    end
+	end
 })
 tab1.create_title({
     name = 'Fly',
