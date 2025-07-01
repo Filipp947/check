@@ -1567,25 +1567,23 @@ end)
 
 local main = Library.new()
 local tab = main.create_tab('Auto')
-
-if obj and obj:IsA("Model") then
 local tab1 = main.create_tab('Main')
 local tab2 = main.create_tab('Teleports')
- tab.create_title({
-    name = 'Auto Quests',
+if workspace:FindFirstChild("Ads") and workspace.Ads:FindFirstChild("Mauser AD") then
+
+tab1.create_title({
+    name = 'Features avalible in game only',
     section = 'left'
 })
-tab.create_button({
-    name = 'Auto Tesla Remains',
-    flag = 'autotesla',
 
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/autotesla"))()
-	end
+tab2.create_title({
+    name = 'Features avalible in game only',
+    section = 'left'
 })
+end
+if obj and obj:IsA("Model") then
+
+
 tab1.create_title({
     name = 'Fly',
     section = 'left'
@@ -1953,7 +1951,7 @@ local character = player.Character or player.CharacterAdded:Wait()
 local hrp = character:WaitForChild("HumanoidRootPart")
 local humanoid = character:WaitForChild("Humanoid")
 local destination = Vector3.new(-424.449, 26.055, -49040.656)
-local speed = 8000
+local speed = 5000
 local reached = false
 local teleportOnSterling = false
 
@@ -1973,7 +1971,7 @@ local function flyToDestination()
         local sterling = findSterling()
         if sterling then
             teleportOnSterling = true
-            hrp.CFrame = CFrame.new(sterling:GetPivot().Position)
+            hrp.CFrame = CFrame.new(sterling:GetPivot().Position+Vector3.new(0,10,0))
             wait(.3)
              humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
               local character = player.Character
@@ -1988,7 +1986,7 @@ local function flyToDestination()
         end
         local humanoid = character:FindFirstChildOfClass("Humanoid")
         if humanoid then
-            humanoid.JumpPower = 50
+            humanoid.JumpPower = 16
             humanoid.AutoJumpEnabled = true
         end
     end
@@ -2084,7 +2082,21 @@ tab.create_button({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
 
 })
+ tab.create_title({
+    name = 'Auto Quests',
+    section = 'left'
+})
+tab.create_button({
+    name = 'Auto Tesla Remains',
+    flag = 'autotesla',
 
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/autotesla"))()
+    end
+})
 
 tab3.create_keybind({
     name = "Toggle Ui",
