@@ -1815,90 +1815,9 @@ tab2.create_title({
 end
 if obj and obj:IsA("Model") then
 
-
 tab1.create_title({
-    name = 'Fly',
+    name = 'Core',
     section = 'left'
-})
-tab1.create_toggle({
-    name = 'Fly',
-    flag = 'fly',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        if state then
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/fly"))()
-        else
-            local sitting = game.Players.LocalPlayer.Character.Humanoid.SeatPart ~= nil
-            if sitting then
-            local Players = game:GetService("Players")
-            local RunService = game:GetService("RunService")
-            local player = Players.LocalPlayer
-            local mouse = player:GetMouse()
-            local character = player.Character
-                if character then
-                    local root = character:FindFirstChild("HumanoidRootPart")
-                    if root then
-                        for _, obj in ipairs(root:GetChildren()) do
-                            if obj:IsA("BodyGyro") or obj:IsA("BodyVelocity") then
-                                obj:Destroy()
-                            end
-                        end
-                    end
-                    local humanoid = character:FindFirstChildOfClass("Humanoid")
-                    if humanoid then
-                        humanoid.JumpPower = 16
-                        humanoid.JumpHeight = 7.2
-                        humanoid.AutoJumpEnabled = true
-                        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                    end
-                end
-        end end
-    end
-})
-tab1.create_slider({
-    name = 'Fly Speed',
-    flag = 'flyspeed',
-
-    section = 'left',
-
-    value = 100,
-    minimum_value = 10,
-    maximum_value = 1000,
-
-    callback = function(value: number)
-        getgenv().vflyspeed=value
-    end
-})
-tab1.create_title({
-    name = 'Bring items',
-    section = 'left'
-})
-
-
-tab1.create_multidropdown({
-    name = "Select items",
-    flag = "selectitems",
-    section = "left",
-    options = {"Bond", "Gold", "Silver", "Coal", "Brain", "Jade", "Strange", "Shotgun", "Rifle"},
-    callback = function(selectedItems)
-        getgenv().bringitem = selectedItems
-    end
-})
-tab1.create_button({
-    name = 'Bring',
-    flag = 'bring',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))()
-
-    end
 })
 tab1.create_toggle({
     name = 'Kill Aura',
@@ -1909,11 +1828,11 @@ tab1.create_toggle({
 
     callback = function(state: boolean)
 
-	if state then 
-		    _G.GunAura = true else 
-		    _G.GunAura = false end
+    if state then 
+            _G.GunAura = true else 
+            _G.GunAura = false end
 local range = 300
-local delayShot = 0.05
+local delayShot = 0.000001
 
 spawn(function()
 while _G.GunAura do
@@ -1926,7 +1845,7 @@ local closestTarget, closestHead, closestHumanoid
 local shortestDistance = range
 
 for _, model in pairs(workspace:GetDescendants()) do
-if model:IsA("Model") and model:FindFirstChild("Humanoid") and model:FindFirstChild("Head") and model:FindFirstChild("HumanoidRootPart") and model.Name == 'Model_NikolaTesla' then
+if model:IsA("Model") and model:FindFirstChild("Humanoid") and model:FindFirstChild("Head") and model:FindFirstChild("HumanoidRootPart") then
 print(model.Name)
 if not game.Players:GetPlayerFromCharacter(model) and model.Humanoid.Health > 0 then
 local dist = (hrp.Position - model.HumanoidRootPart.Position).Magnitude
@@ -2059,6 +1978,92 @@ tab1.create_toggle({
         
     end
 })
+
+tab1.create_title({
+    name = 'Fly',
+    section = 'left'
+})
+tab1.create_toggle({
+    name = 'Fly',
+    flag = 'fly',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+        if state then
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/fly"))()
+        else
+            local sitting = game.Players.LocalPlayer.Character.Humanoid.SeatPart ~= nil
+            if sitting then
+            local Players = game:GetService("Players")
+            local RunService = game:GetService("RunService")
+            local player = Players.LocalPlayer
+            local mouse = player:GetMouse()
+            local character = player.Character
+                if character then
+                    local root = character:FindFirstChild("HumanoidRootPart")
+                    if root then
+                        for _, obj in ipairs(root:GetChildren()) do
+                            if obj:IsA("BodyGyro") or obj:IsA("BodyVelocity") then
+                                obj:Destroy()
+                            end
+                        end
+                    end
+                    local humanoid = character:FindFirstChildOfClass("Humanoid")
+                    if humanoid then
+                        humanoid.JumpPower = 16
+                        humanoid.JumpHeight = 7.2
+                        humanoid.AutoJumpEnabled = true
+                        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                    end
+                end
+        end end
+    end
+})
+tab1.create_slider({
+    name = 'Fly Speed',
+    flag = 'flyspeed',
+
+    section = 'left',
+
+    value = 100,
+    minimum_value = 10,
+    maximum_value = 1000,
+
+    callback = function(value: number)
+        getgenv().vflyspeed=value
+    end
+})
+tab1.create_title({
+    name = 'Bring items',
+    section = 'left'
+})
+
+
+tab1.create_multidropdown({
+    name = "Select items",
+    flag = "selectitems",
+    section = "left",
+    options = {"Bond", "Gold", "Silver", "Coal", "Brain", "Jade", "Strange", "Shotgun", "Rifle"},
+    callback = function(selectedItems)
+        getgenv().bringitem = selectedItems
+    end
+})
+tab1.create_button({
+    name = 'Bring',
+    flag = 'bring',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))()
+
+    end
+})
+
 local teleportLocations = {
     ["Spawn"] = CFrame.new(56.6396217, 3.24999976, 29936.3516),
     ["10 KM"] = CFrame.new(-160.576843, 2.99617577, 19913.252),
