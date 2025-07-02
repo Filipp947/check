@@ -1896,9 +1896,167 @@ tab1.create_button({
 
     callback = function(state: boolean)
 
-        if not getgenv().bringitem then getgenv().bringitem='Bond' end
         loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))()
 
+    end
+})
+tab1.create_toggle({
+    name = 'Kill Aura',
+    flag = 'KillAura',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+
+	if state then 
+		    _G.GunAura = true else 
+		    _G.GunAura = false end
+local range = 300
+local delayShot = 0.05
+
+spawn(function()
+while _G.GunAura do
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:FindFirstChild("HumanoidRootPart")
+if not hrp then task.wait() continue end
+
+local closestTarget, closestHead, closestHumanoid
+local shortestDistance = range
+
+for _, model in pairs(workspace:GetDescendants()) do
+if model:IsA("Model") and model:FindFirstChild("Humanoid") and model:FindFirstChild("Head") and model:FindFirstChild("HumanoidRootPart") and model.Name == 'Model_NikolaTesla' then
+print(model.Name)
+if not game.Players:GetPlayerFromCharacter(model) and model.Humanoid.Health > 0 then
+local dist = (hrp.Position - model.HumanoidRootPart.Position).Magnitude
+if dist < shortestDistance then
+closestTarget = model
+closestHead = model.Head
+closestHumanoid = model.Humanoid
+shortestDistance = dist
+end
+end
+end
+end
+
+if closestTarget and closestHead and closestHumanoid then
+local shootTarget = {}
+local weapon = nil
+for _, tool in pairs(character:GetChildren()) do
+if tool:FindFirstChild("ClientWeaponState") and tool.ClientWeaponState:FindFirstChild("CurrentAmmo") and tool.ClientWeaponState.CurrentAmmo.Value > 0 then
+weapon = tool
+local name = tool.Name
+if name == "Shotgun" or name == "Sawed-Off Shotgun" then
+for _, slot in pairs({14,8,2,5,11,17}) do
+shootTarget[slot] = closestHumanoid
+end
+else
+shootTarget["2"] = closestHumanoid
+end
+break
+end
+end
+
+if weapon and next(shootTarget) then
+game.ReplicatedStorage.Remotes.Weapon.Shoot:FireServer(workspace:GetServerTimeNow(), weapon, CFrame.new(workspace.CurrentCamera.CFrame.Position, closestHead.Position), shootTarget)
+game.ReplicatedStorage.Remotes.Weapon.Reload:FireServer(workspace:GetServerTimeNow(), weapon)
+end
+end
+
+task.wait(delayShot)
+end
+end)
+
+
+    end
+})
+tab1.create_button({
+    name = 'Instant Interact',
+    flag = 'InstantInteract',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+
+        local function setupPrompt(p)
+                if p:IsA("ProximityPrompt") then
+                    p.RequiresLineOfSight = false
+                    p.MaxActivationDistance = math.huge
+                    p.HoldDuration = 0
+                    task.spawn(function()
+                        while p:IsDescendantOf(game) and p.Enabled do
+                            fireproximityprompt(p)
+                            task.wait(0.1)
+                        end
+                    end)
+                end
+            end
+
+            for _, p in ipairs(workspace:GetDescendants()) do setupPrompt(p) end
+            workspace.DescendantAdded:Connect(setupPrompt)
+
+
+    end
+})
+tab1.create_toggle({
+    name = 'Noclip',
+    flag = 'Noclip',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+
+local Noclip = nil
+local Clip = nil
+
+function noclip()
+    Clip = false
+    local function Nocl()
+        if Clip == false and game.Players.LocalPlayer.Character ~= nil then
+            for _,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                if v:IsA('BasePart') and v.CanCollide and v.Name ~= floatName then
+                    v.CanCollide = false
+                end
+            end
+        end
+        wait(0.21) -- basic optimization
+    end
+    Noclip = game:GetService('RunService').Stepped:Connect(Nocl)
+end
+
+function clip()
+    if Noclip then Noclip:Disconnect() end
+    Clip = true
+end
+
+        
+        if state then
+         noclip()
+    else
+        clip()
+    end
+
+    end
+})
+tab1.create_toggle({
+    name = 'Third Person',
+    flag = 'Noclip',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+    if state then
+        game:GetService("Players").LocalPlayer.CameraMaxZoomDistance = 99999
+        game:GetService("Players").LocalPlayer.CameraMode = Enum.CameraMode.Classic
+    else
+        game:GetService("Players").LocalPlayer.CameraMaxZoomDistance = 0
+        game:GetService("Players").LocalPlayer.CameraMode = Enum.CameraMode.Classic
+    end
+        
     end
 })
 local teleportLocations = {
@@ -2317,7 +2475,7 @@ tab.create_button({
     section = 'left'
 })
 tab.create_button({
-    name = 'Auto Tesla Remains',
+    name = 'Auto Electric Remains',
     flag = 'autotesla',
 
     section = 'left',
@@ -2326,6 +2484,34 @@ tab.create_button({
     callback = function(state: boolean)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/autotesla"))()
     end
+})
+tab.create_button({
+    name = 'Auto Tycoon',
+    flag = 'autotesla',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+        getgenv().startcframe=CFrame.new(151.031082, 2.76926351, 29931.2715)
+        getgenv().bringitem={'Gold','Silver','Jade','Brain'}
+        local function setupPrompt(p)
+                if p:IsA("ProximityPrompt") then
+                    p.RequiresLineOfSight = false
+                    p.MaxActivationDistance = math.huge
+                    p.HoldDuration = 0
+                    task.spawn(function()
+                        while p:IsDescendantOf(game) and p.Enabled do
+                            fireproximityprompt(p)
+                            task.wait(0.1)
+                        end
+                    end)
+                end
+            end
+
+            for _, p in ipairs(workspace:GetDescendants()) do setupPrompt(p) end
+            workspace.DescendantAdded:Connect(setupPrompt)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/bb"))()   end
 })
 
 tab3.create_keybind({
