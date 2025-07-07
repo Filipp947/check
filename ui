@@ -1,9 +1,5 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/antiskid"))()
-getgenv().bringitem=nil
-getgenv().autobond=nil
-getgenv().autowin=nil
-getgenv().auto_win=nil
-getgenv().auto_bond=nil
+
 local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 local t = tick()
 while gui:FindFirstChild("DetailTextLabel", true) and tick() - t < 10 do task.wait() end
@@ -2059,7 +2055,7 @@ tab1.create_button({
 
     callback = function(state: boolean)
 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/l"))()
 
     end
 })
@@ -2437,7 +2433,7 @@ tab.create_button({
 
              if getgenv().moon then
             getgenv().auto_bond=true  else getgenv().autobond=true end
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/l"))() end
 
 })
 tab.create_button({
@@ -2452,7 +2448,7 @@ tab.create_button({
                 if getgenv().moon then
 
         getgenv().auto_win=true else getgenv().autowin=true end
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/l"))() end
 
 })
 
@@ -2472,7 +2468,7 @@ tab.create_button({
     else
         getgenv().autobond=true
         getgenv().autowin=true end
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/selftilted/flighttosky/refs/heads/main/DeadRails"))() end
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/l"))() end
 
 })
  tab.create_title({
