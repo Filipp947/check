@@ -1,12 +1,7 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/antiskid"))()
-
-local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-local t = tick()
-while gui:FindFirstChild("DetailTextLabel", true) and tick() - t < 10 do task.wait() end
-if gui:FindFirstChild("DetailTextLabel", true) then
-    print(">10s")
-    game:GetService("ReplicatedStorage").Remotes.ReturnToLooby:FireServer()
-end
+repeat
+    task.wait()
+until game:IsLoaded()
 local names = {"golden", "default", "cattle", "armor", "wooden", "ghost", "passenger"}
 local obj
 
@@ -1808,8 +1803,7 @@ tab2.create_title({
     name = 'Features avalible in game only',
     section = 'left'
 })
-end
-if obj and obj:IsA("Model") then
+else
 
 tab1.create_title({
     name = 'Core',
