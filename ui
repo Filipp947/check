@@ -39,9 +39,6 @@ local Library = {
 }
 
 
-if not isfolder("cac hub") then
-    makefolder("cac hub")
-end
 
 function Library:disconnect()
     for _, value in Library.connections do
