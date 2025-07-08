@@ -1,4 +1,8 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/antiskid"))()
+getgenv().autobond=nil
+getgenv().auto_bond=nil
+getgenv().auto_win=nil
+getgenv().autowin=nil
 local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 local t = tick()
 while gui:FindFirstChild("DetailTextLabel", true) and tick() - t < 10 do task.wait() end
@@ -42,10 +46,6 @@ local Library = {
     start_position = nil;
 }
 
-
-if not isfolder("cac hub") then
-    makefolder("cac hub")
-end
 
 function Library:disconnect()
     for _, value in Library.connections do
