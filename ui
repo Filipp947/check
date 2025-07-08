@@ -1,4 +1,4 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/antiskid"))()
+
 getgenv().autobond=nil
 getgenv().auto_bond=nil
 getgenv().auto_win=nil
