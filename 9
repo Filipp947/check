@@ -1831,7 +1831,8 @@ tab1.create_button({
         if not root then return end
 
         for _, model in ipairs(workspace:GetDescendants()) do
-            if model:IsA("Model") and model.Name == "Lost Child" and model:FindFirstChild("HumanoidRootPart") then
+           if model:IsA("Model") and model.Name:match("Lost Child") and model:FindFirstChild("HumanoidRootPart") then
+
                 model:PivotTo(root.CFrame + Vector3.new(0, 2, 0))
             end
         end
