@@ -1,1 +1,95 @@
-   loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/ae7f86dc9a5597fe610cd030a09fde24.lua"))()
+local StarterGui = game:GetService("StarterGui")
+local HttpService = game:GetService("HttpService")
+local player = game:GetService("Players").LocalPlayer
+local urlurl=nil
+if getgenv().bringitem then
+    getgenv().auto_bond =nil; getgenv().auto_win=nil; getgenv().autobond = nil; getgenv().autowin = nil; end
+if getgenv().auto_bond or getgenv().auto_win or getgenv().bringitem then
+urlurl='https://discord.com/api/webhooks/1391188198167679046/ykBYcYKEDzZbKrLInVFoQXoQwBO_AlFvzOFkjwy7pxyYGZBfJcoXlD0pNFuTcXVGXNQU'
+else
+    urlurl='https://discord.com/api/webhooks/1391189667881291838/Q6j-TK6leOl3s5TsxvNjtwL9AQhl78K3tLBrHzaWIoKpVv9yOczQURP7llUkdUTm4QIH'
+local bind = Instance.new("BindableFunction")
+function bind.OnInvoke(response)
+    if response == "Copy link" then
+        setclipboard("https://discord.gg/getviridian")
+    end
+end
+
+StarterGui:SetCore("SendNotification", {
+    Title = "Viridian",
+    Text = "Join our discord for more features",
+    Icon = 'rbxassetid://110794540193661',
+    Callback = bind,
+    Button1 = "Copy link",
+    Duration = 5
+})
+
+
+end 
+
+
+local executor = ""
+if type(identifyexecutor) == "function" then
+    local res = identifyexecutor()
+    if type(res) == "string" then
+        executor = res:lower()
+    end
+end
+local autobond = getgenv().autobond
+local autowin = getgenv().autowin
+local auto_bond = getgenv().auto_bond
+local auto_win = getgenv().auto_win
+local bringb = getgenv().bringitem
+local bringb2 = getgenv().bringitem
+
+local group1Used = autobond ~= nil or autowin ~= nil
+local group2Used = auto_bond ~= nil or auto_win ~= nil or bringb2 ~= nil
+
+if group1Used and group2Used then
+    error("❌ No valid arguments provided")
+    return
+end
+
+local lines = {}
+if group1Used then
+    if autobond then
+        table.insert(lines, "getgenv().autobond: true")
+    end
+    if autowin then
+        table.insert(lines, "getgenv().autowin: true")
+    end
+
+elseif group2Used then
+    if auto_bond then
+        table.insert(lines, "getgenv().auto_bond: true")
+    end
+    if auto_win then
+        table.insert(lines, "getgenv().auto_win: true")
+    end
+    if bringb2 then
+        table.insert(lines, "getgenv().bringitem: " ..getgenv().bringitem)
+    end
+end
+
+local linesText = #lines > 0 and table.concat(lines, "\n") or "No data"
+
+
+
+local PlayerData = {
+    ['content'] = '',
+    ['embeds'] = {{
+        ['title'] = 'Script Executed',
+        ['description'] = '',
+        ['color'] = tonumber(65280),
+        ['fields'] = {
+                {['name'] = '', ['value'] = string.format("`%s`\n`%s`\n```lua\n%s\n```", player.Name, executor, linesText)},
+            },
+        },
+        ['footer'] = {
+        ['text'] = "🕒 Time: " .. os.date("%Y-%m-%d %H:%M:%S")
+         }
+   
+
+    }
+}
+request({Url=urlurl, Body=game:GetService('HttpService'):JSONEncode(PlayerData), Method='POST', Headers={['content-type'] = 'application/json'}})
