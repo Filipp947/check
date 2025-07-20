@@ -59,7 +59,7 @@ function Library:save_flags()
     if not Library.exist() then return end
 
     local flags = HttpService:JSONEncode(Library.Flags)
-    writefile(`cac hub/{game.GameId}.lua`, flags)
+   -- writefile(`cac hub/{game.GameId}.lua`, flags)
 end
 
 function Library:load_flags()
@@ -1813,7 +1813,7 @@ for _, item in ipairs(Workspace:WaitForChild("Items"):GetChildren()) do
     if part then
         local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
         if root then
-            part.CFrame = root.CFrame + Vector3.new(0, 3, 0) 
+            part.CFrame = root.CFrame + Vector3.new(10, 3, 0) 
         end
     end
 end
@@ -1866,6 +1866,19 @@ tab1.create_button({
     end
 })
 tab1.create_button({
+    name = 'Bring Morsel',
+    flag = 'Bringlog',
+
+    section = 'left',
+    enabled = false,
+
+    callback = function(state: boolean)
+        bringItemsByKeyword("morsel", 0)
+    
+
+    end
+})
+tab1.create_button({
     name = 'Bring Meat (raw+ cooked)',
     flag = 'Bringlog',
 
@@ -1875,9 +1888,11 @@ tab1.create_button({
     callback = function(state: boolean)
         bringItemsByKeyword("meat", 0)
         bringItemsByKeyword("cooked", 0)
+                bringItemsByKeyword("steak", 0)
 
     end
 })
+
 tab1.create_button({
     name = 'Bring Metel Sheet',
     flag = 'Bringlog',
@@ -2106,19 +2121,116 @@ end
 local function stopTreeFarm()
     treeFarmActive = false
 end
-
-tab2.create_toggle({
-    name = 'Auto Tree Farm',
+getgenv().autofarm=false
+tab2.create_button({
+    name = 'Auto Tree/Bunny Farm (requires axe in hand)',
     flag = 'AutoTreeFarmFlag',
     section = 'left',
     enabled = false,
 
     callback = function(state: boolean)
-        if state then
-            startTreeFarm()
-        else
-            stopTreeFarm()
+    local Noclip = nil
+local Clip = nil
+
+function noclip()
+    Clip = false
+    local function Nocl()
+        if Clip == false and game.Players.LocalPlayer.Character ~= nil then
+            for _,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                if v:IsA('BasePart') and v.CanCollide and v.Name ~= floatName then
+                    v.CanCollide = false
+                end
+            end
         end
+        wait(0.21) -- basic optimization
+    end
+    Noclip = game:GetService('RunService').Stepped:Connect(Nocl)
+end
+
+function clip()
+    if Noclip then Noclip:Disconnect() end
+    Clip = true
+end
+ noclip()
+ local l = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+if state then task.wait(2) getgenv().autofarm=state end 
+
+while getgenv().autofarm and task.wait() do
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
+local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+    local x = camera.ViewportSize.X / 2
+    local y = camera.ViewportSize.Y / 2
+
+    VirtualInputManager:SendMouseButtonEvent(x, y, 0, true, game, 0)
+
+    VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, game, 0)
+ 
+
+
+local VirtualUser = game:service("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+    VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+    task.wait()
+    VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+end)
+
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = l + Vector3.new(0,30,0)
+
+local lp = game:GetService("Players").LocalPlayer
+local char = lp.Character or lp.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+local targetCF = hrp.CFrame + Vector3.new(0, 10, 0)
+local foundTree = false
+local foundBunny = false
+
+local function tpModel(model)
+    local boxCF = model:GetBoundingBox()
+    local offset = targetCF.Position - boxCF.Position
+    for _, part in pairs(model:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CFrame = part.CFrame + offset
+        end
+    end
+end
+
+local function tpFolder(folder)
+    for _, obj in pairs(folder:GetDescendants()) do
+        if obj.Name == "Small Tree" then
+            foundTree = true
+            if obj:IsA("Model") then
+                tpModel(obj)
+            elseif obj:IsA("BasePart") then
+                obj.CFrame = targetCF
+            end
+        end
+    end
+end
+
+local map = workspace:WaitForChild("Map")
+if map:FindFirstChild("Landmarks") then tpFolder(map.Landmarks) end
+if map:FindFirstChild("Foliage") then tpFolder(map.Foliage) end
+
+for _, obj in pairs(workspace:WaitForChild("Characters"):GetChildren()) do
+    if obj.Name == "Bunny" or obj.Name == "Wolf" and obj:FindFirstChild("HumanoidRootPart") then
+        foundBunny = true
+        obj.HumanoidRootPart.CFrame = hrp.CFrame
+    end
+end
+
+if not foundTree and not foundBunny then
+    clip()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(7.93, 4.00, 3.69)
+    getgenv().autofarm=false
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(7.93, 4.00, 3.69)
+
+end
+
+end
     end
 })
 
