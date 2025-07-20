@@ -1,9 +1,44 @@
 
+local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local t = tick()
+while gui:FindFirstChild("DetailTextLabel", true) and tick() - t < 30 do task.wait() end
+if gui:FindFirstChild("DetailTextLabel", true) then
+   game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
 
+end
+
+
+local Hub = "Viridian"
+local Hub_Script_ID = "1d768c262f1e496ee5d148131287db9d"
+local Discord_Invite = "https://discord.gg/getviridian"
+local UI_Theme = "Dark"
+
+local Linkvertise_Enabled = true
+local Linkvertise_Link = "https://ads.luarmor.net/get_key?for=Viridian-LpXhOHpTpACp"
+
+local Lootlabs_Enabled = true
+local Lootlabs_Link = "https://ads.luarmor.net/get_key?for=Viridian-YesFzYInmWMN"
+-------------------------------------------
+
+makefolder(Hub)
+local key_path = Hub .. "/Key.txt"
+
+
+
+local names = {"golden", "default", "cattle", "armor", "wooden", "ghost", "passenger"}
+local obj
+
+for _, name in ipairs(names) do
+    local found = workspace:FindFirstChild(name)
+    if found then
+        obj = found
+        break
+    end
+end
 --// library script private
 if not getgenv().moon then
 getgenv().namehub = "Viridian | .gg/getviridian" else
-getgenv().namehub = "Moon | .gg/moondiety"
+getgenv().namehub = "Moon | .gg/Viridian"
 end
 local UserInputService = game:GetService('UserInputService')
 local LocalPlayer = game:GetService('Players').LocalPlayer
@@ -14,7 +49,7 @@ local UserInputService = game:GetService("UserInputService")
 
 local Mouse = LocalPlayer:GetMouse();
 
-
+local contain123
 local Library = {
     connections = {};
     Flags = {};
@@ -27,6 +62,9 @@ local Library = {
 }
 
 
+if not isfolder("cac hub") then
+    makefolder("cac hub")
+end
 
 function Library:disconnect()
     for _, value in Library.connections do
@@ -59,7 +97,7 @@ function Library:save_flags()
     if not Library.exist() then return end
 
     local flags = HttpService:JSONEncode(Library.Flags)
-   -- writefile(`cac hub/{game.GameId}.lua`, flags)
+    writefile(`cac hub/{game.GameId}.lua`, flags)
 end
 
 function Library:load_flags()
@@ -116,7 +154,79 @@ function Library:close()
         self.Mobile.Modal = false
     end)
 end
+local Cloneref = cloneref or clonereference or function(instance)
+    return instance
+end
+local Players, HttpService = Cloneref(game:GetService("Players")), Cloneref(game:GetService("HttpService"))
+local Request = http_request or request or syn.request or http
 
+local API = loadstring(game:HttpGet("https://sdkAPI-public.luarmor.net/library.lua"))()
+
+API.script_id = Hub_Script_ID
+
+local function checkKey(input_key, button)
+    local status = API.check_key(input_key or script_key)
+
+    if status.code == "KEY_VALID" then
+        script_key = input_key or script_key
+
+
+      
+            if button then 
+                local label = button:FindFirstChildWhichIsA("TextLabel")
+                if label then
+                    local originalText = label.Text
+                    label.Text = "Verifying Key..."
+                    task.delay(3, function()
+                        label.Text = originalText
+                    end)
+                end
+            end
+local gameId = tostring(game.GameId)
+
+local supportedGames = {
+    ["7018190066"] = "https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/l", -- Dead Rails
+   ["7326934954"] = "https://raw.githubusercontent.com/wzaxk/check/refs/heads/main/9", -- 99 nights
+}
+
+if supportedGames[gameId] then
+    
+            if Library and contain123 then
+            Library.close(contain123) end
+    loadstring(game:HttpGet(supportedGames[gameId]))()
+
+end
+            
+            
+       
+
+    else
+        local messages = {
+            KEY_HWID_LOCKED = "Key linked to a different HWID. Please reset it using our bot",
+            KEY_INCORRECT   = "Key is incorrect",
+            KEY_INVALID     = "Key is invalid",
+        }
+
+        if button then
+            local label = button:FindFirstChildWhichIsA("TextLabel")
+            if label then
+                local originalText = label.Text
+                local message = messages[status.code] or "Unknown error"
+                label.Text = message
+
+                task.delay(3, function()
+                    label.Text = originalText
+                end)
+            end
+       
+        end
+    end
+end
+
+
+if script_key then
+    checkKey()
+end
 function Library:drag()
     if not Library.drag_position then
         return
@@ -346,6 +456,7 @@ function Library:new()
     Icon.Position = UDim2.new(0.268000007, 0, 0.5, 0)
     Icon.Size = UDim2.new(0, 15, 0, 15)
     Icon.Image = "rbxassetid://17183279677"
+    contain123 = container
     container.Container.InputBegan:Connect(function(input: InputObject)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             Library.dragging = true
@@ -569,45 +680,16 @@ end)
         end)
 
 
-        local right_section = Instance.new("ScrollingFrame")
-        right_section.Name = "RightSection"
-        right_section.Active = true
-        right_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        right_section.BackgroundTransparency = 1.000
-        right_section.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        right_section.BorderSizePixel = 0
-        right_section.Position = UDim2.new(0.662374794, 0, 0.126760557, 0)
-        right_section.Size = UDim2.new(0, 215, 0, 372)
-        right_section.AutomaticCanvasSize = Enum.AutomaticSize.XY
-        right_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
-        right_section.ScrollBarThickness = 0
-
-        local rightsectionlist = Instance.new("UIListLayout")
-        rightsectionlist.Parent = right_section
-
-        rightsectionlist.HorizontalAlignment = Enum.HorizontalAlignment.Center
-        rightsectionlist.SortOrder = Enum.SortOrder.LayoutOrder
-        rightsectionlist.Padding = UDim.new(0, 7)
-
-        if container.Container:FindFirstChild('RightSection') then
-            left_section.Visible = false
-            right_section.Visible = false
-        else
-            Tab.open_tab({
-                tab = tab,
-                left_section = left_section,
-                right_section = right_section
-            })
-        end
+     
 
         left_section.Parent = container.Container
-        right_section.Parent = container.Container
+      
 
         tab.MouseButton1Click:Connect(function()
             Tab.open_tab({
                 tab = tab,
                 left_section = left_section,
-                right_section = right_section
+              
             })
         end)
 
@@ -615,7 +697,7 @@ end)
 
 
         function Module:create_title()
-            local section = self.section == 'left' and left_section or right_section
+            local section = self.section == 'left' and left_section
 
             local title = Instance.new("TextLabel")
             title.Name = "Title"
@@ -672,7 +754,7 @@ end)
         end
 
         function Module:create_toggle()
-            local section = self.section == 'left' and left_section or right_section
+            local section = self.section == 'left' and left_section
 
             local toggle = Instance.new("TextButton")
             toggle.Name = "Toggle"
@@ -795,7 +877,7 @@ end)
             function Module:create_button(config)
         
 
-            local section = self.section == "left" and left_section or right_section
+            local section = self.section == "left" and left_section
 
             local button = Instance.new("TextButton")
             button.Name = "Button"
@@ -914,7 +996,7 @@ end)
 
      function Module:create_slider()
     local drag = false
-    local section = self.section == 'left' and left_section or right_section
+    local section = self.section == 'left' and left_section
 
     local slider = Instance.new("TextButton")
     slider.Name = "Slider"
@@ -1057,7 +1139,7 @@ end)
     end)
 end
 function Module:create_multidropdown()
-    local section = self.section == 'left' and left_section or right_section
+    local section = self.section == 'left' and left_section
     local list_size = 6
     local open = false
 
@@ -1340,7 +1422,7 @@ function Module:create_multidropdown()
 end
 
 function Module:create_dropdown()
-    local section = self.section == 'left' and left_section or right_section
+    local section = self.section == 'left' and left_section
     local list_size = 6
     local open = false
 
@@ -1470,7 +1552,7 @@ function Module:create_dropdown()
     local CLOSED_HEIGHT = 50
     local OPTION_HEIGHT = 23
 
-    Dropdown.selectedOption = nil 
+    Dropdown.selectedOption = nil -- текущий выбор
 
     function Dropdown:open()
         open = true
@@ -1522,6 +1604,7 @@ function Module:create_dropdown()
             new_option.Parent = Options
             new_option.Text = value
 
+            -- Подсвечиваем только текущий выбранный option
             if value == self.selectedOption then
                 new_option.TextTransparency = 0
             else
@@ -1554,6 +1637,7 @@ function Module:create_dropdown()
         end
     end
 
+    -- Инициализируем с пустым выбором
     Dropdown.selectedOption = nil
     TextLabel.Text = self.name
 
@@ -1578,7 +1662,7 @@ end
 
 
         function Module:create_textbox()
-            local section = self.section == 'left' and left_section or right_section
+            local section = self.section == 'left' and left_section
             local Textbox = {}
             local textbox = Instance.new("TextButton")
             textbox.Name = "TextBox"
@@ -1657,8 +1741,74 @@ end
 
             return Textbox;
         end
+        function Module:create_input(options)
+    self.name = options.name or "Input"
+    self.flag = options.flag or "input_flag"
+    self.section = options.section or "left"
+
+    local section = self.section == "left" and left_section
+
+    local inputButton = Instance.new("TextButton")
+    inputButton.Name = "Input"
+    inputButton.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
+    inputButton.BorderSizePixel = 0
+    inputButton.Position = UDim2.new(0.02, 0, 0, 37)
+    inputButton.Size = UDim2.new(0.96, 0, 0, 50)
+    inputButton.AutoButtonColor = false
+    inputButton.Font = Enum.Font.SourceSans
+    inputButton.Text = ""
+    inputButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+    inputButton.TextSize = 14
+    inputButton.Parent = section
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 10)
+    UICorner.Parent = inputButton
+
+    local TextLabel = Instance.new("TextLabel")
+    TextLabel.Parent = inputButton
+    TextLabel.AnchorPoint = Vector2.new(0, 0.5)
+    TextLabel.Position = UDim2.new(0, 17, 0.5, 0)
+    TextLabel.Size = UDim2.new(1, -20, 0, 15)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
+    TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TextLabel.TextScaled = true
+    TextLabel.TextWrapped = true
+    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TextLabel.Text = self.name
+
+    local TextBox = Instance.new("TextBox")
+    TextBox.Name = "InputBox"
+    TextBox.Parent = inputButton
+    TextBox.AnchorPoint = Vector2.new(1, 0.5)
+    TextBox.BackgroundColor3 = Color3.fromRGB(22, 23, 27)
+    TextBox.BorderSizePixel = 0
+    TextBox.Position = UDim2.new(0.95, 0, 0.5, 0)
+    TextBox.Size = UDim2.new(0, 120, 0, 27)
+    TextBox.ClearTextOnFocus = false
+    TextBox.Text = ""
+    TextBox.PlaceholderText = "Enter key"
+    TextBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+    TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TextBox.TextSize = 14
+    TextBox.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
+    TextBox.TextXAlignment = Enum.TextXAlignment.Center
+    TextBox.ClipsDescendants = true
+
+    local UICorner_2 = Instance.new("UICorner")
+    UICorner_2.CornerRadius = UDim.new(0, 4)
+    UICorner_2.Parent = TextBox
+
+    -- Реагируем на любое изменение текста
+    TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+        Library.Flags[self.flag] = TextBox.Text
+        Library.save_flags()
+    end)
+end
+
         function Module:create_keybind()
-        local section = self.section == 'left' and left_section or right_section
+        local section = self.section == 'left' and left_section
         local keybind = Instance.new("TextButton")
         keybind.Name = "Keybind"
         keybind.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
@@ -1773,919 +1923,95 @@ end)
 
 local main = Library.new()
 
-local tab1 = main.create_tab('Item')
-local tab2 = main.create_tab('Utility')
-local tab = main.create_tab('Teleport')
-local tab3 = main.create_tab('ESP')
+local tab = main.create_tab('Key')
+tab:create_input({
+    name = "Enter Key",
+    flag = "key_input",
+    section = "left"
+})
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-local Items = workspace:WaitForChild("Items")
+local checkKeyButton
 
-local function bringItemsByKeyword(keyword, yOffset)
-    for _, item in ipairs(Items:GetChildren()) do
-        if item.Name:lower():find(keyword) then
-            local part = item:FindFirstChildWhichIsA("BasePart") or (item:IsA("BasePart") and item)
-            if part and Root then
-                part.CFrame = Root.CFrame + Vector3.new(math.random(-5,5), yOffset or 0, math.random(-5,5))
-            end
-        end
-    end
-end
-
-tab1.create_button({
-    name = 'Bring all item',
-    flag = 'Bringallitem',
-
+checkKeyButton = tab.create_button({ 
+    name = 'Check Key',
+    flag = 'tptobase',
     section = 'left',
     enabled = false,
 
     callback = function(state: boolean)
-    
-       local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Workspace = game:GetService("Workspace")
-
-
-for _, item in ipairs(Workspace:WaitForChild("Items"):GetChildren()) do
-    local part = item:FindFirstChildWhichIsA("BasePart") or (item:IsA("BasePart") and item)
-    if part then
-        local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-        if root then
-            part.CFrame = root.CFrame + Vector3.new(10, 3, 0) 
-        end
-    end
-end
-
-        
+        local key = Library.Flags["key_input"]
+        checkKey(key, checkKeyButton)
     end
 })
 
-tab1.create_button({
-    name = 'Bring Lost Child',
-    flag = 'Bringallitem',
-    section = 'left',
-    callback = function()
-        local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-        if not root then return end
+local lootButton 
 
-        for _, model in ipairs(workspace:GetDescendants()) do
-           if model:IsA("Model") and model.Name:match("Lost Child") and model:FindFirstChild("HumanoidRootPart") then
-
-                model:PivotTo(root.CFrame + Vector3.new(0, 2, 0))
-            end
-        end
-    end
-})
-
-tab1.create_button({
-    name = 'Bring Log',
-    flag = 'Bringlog',
-
+lootButton = tab.create_button({
+    name = 'Get Key (LootLabs)',
+    flag = 'bring',
     section = 'left',
     enabled = false,
 
     callback = function(state: boolean)
+        setclipboard(Lootlabs_Link)
 
-       bringItemsByKeyword("log", 0)
+        local label = lootButton:FindFirstChildWhichIsA("TextLabel")
+        if not label then return end
 
+        local originalText = label.Text
+        label.Text = "Copied to clipboard!"
+
+        task.delay(2, function()
+            label.Text = originalText
+        end)
     end
 })
-tab1.create_button({
-    name = 'Bring Coal',
-    flag = 'Bringlog',
 
+local linkvertiseButton 
+
+linkvertiseButton = tab.create_button({
+    name = 'Get Key (LinkVertise)',
+    flag = 'LinkVertise',
     section = 'left',
     enabled = false,
 
     callback = function(state: boolean)
-
-      bringItemsByKeyword("coal", 0)
-
-    end
-})
-tab1.create_button({
-    name = 'Bring Morsel',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("morsel", 0)
-    
-
-    end
-})
-tab1.create_button({
-    name = 'Bring Meat (raw+ cooked)',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("meat", 0)
-        bringItemsByKeyword("cooked", 0)
-                bringItemsByKeyword("steak", 0)
-
-    end
-})
-
-tab1.create_button({
-    name = 'Bring Metel Sheet',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("sheet metal", 0)
-    end
-})
-tab1.create_button({
-    name = 'Bring Ammo',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("ammo", 0)
-    end
-})
-tab1.create_button({
-    name = 'Bring Fan',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("fan", 3)
-    end
-})
-tab1.create_button({
-    name = 'Bring Nails',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("nails", 3)
-    end
-})
-tab1.create_button({
-    name = 'Bring Flashlight',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("flashlight", 3)
-    end
-})
-tab1.create_button({
-    name = 'Bring Revolver',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        for _, item in ipairs(Items:GetChildren()) do
-    if item:IsA("Model") and item.Name:lower():find("revolver") then
-        local part = item:FindFirstChildWhichIsA("BasePart")
-        if part and Root then
-            part.CFrame = Root.CFrame + Vector3.new(0, 2, 0)
-        end
-    end
-end
-    end
-})
-tab1.create_button({
-    name = 'Bring Lost',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("flashlight", 3)
-    end
-})
-tab1.create_button({
-    name = 'Bring Fuel Canister',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("fuel canister", 0)
-    end
-})
-tab1.create_button({
-    name = 'Bring Tyre',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        bringItemsByKeyword("tyre", 0)
-    end
-})
-tab1.create_button({
-    name = 'Bring Bandage',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        for _, item in ipairs(Items:GetChildren()) do
-    if item:IsA("Model") and item.Name:lower():find("bandage") then
-        local part = item:FindFirstChildWhichIsA("BasePart")
-        if part and Root then
-            part.CFrame = Root.CFrame + Vector3.new(0, 2, 0)
-        end
-    end
-end
-    end
-})
-
-tab2.create_button({
-    name = 'Auto Cook Meat',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-       local campfirePos = Vector3.new(1.87, 4.33, -3.67)
-for _, item in pairs(Items:GetChildren()) do
-    if item:IsA("Model") or item:IsA("BasePart") then
-        if item.Name:lower():find("meat") then
-            local part = item:FindFirstChildWhichIsA("BasePart") or item
-            if part then
-                part.CFrame = CFrame.new(campfirePos + Vector3.new(math.random(-2,2), 0.5, math.random(-2,2)))
-            end
-        end
-    end
-end
-    end
-})
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ToolDamageObject = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToolDamageObject")
-local Workspace = game:GetService("Workspace")
-
-local treeFarmActive = false
-
-local function getAllTrees()
-    local map = Workspace:FindFirstChild("Map")
-    if not map then return {} end
-    local landmarks = map:FindFirstChild("Landmarks") or map:FindFirstChild("Foliage")
-    if not landmarks then return {} end
-
-    local trees = {}
-    for _, tree in ipairs(landmarks:GetChildren()) do
-        if tree.Name == "Small Tree" and tree:IsA("Model") then
-            local trunk = tree:FindFirstChild("Trunk") or tree.PrimaryPart
-            if trunk then
-                table.insert(trees, {tree = tree, trunk = trunk})
-            end
-        end
-    end
-    return trees
-end
-
-local function getAxe()
-    local inv = LocalPlayer:FindFirstChild("Inventory")
-    if not inv then return nil end
-    return inv:FindFirstChild("Old Axe") or inv:FindFirstChildWhichIsA("Tool")
-end
-
-local function startTreeFarm()
-    if treeFarmActive then return end
-    treeFarmActive = true
-
-    task.spawn(function()
-        while treeFarmActive do
-            local trees = getAllTrees()
-            for _, t in ipairs(trees) do
-                if not treeFarmActive then break end
-                local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-                local hrp = char:FindFirstChild("HumanoidRootPart")
-                if hrp and t.trunk then
-                    -- Перемещение к дереву
-                    local treeCFrame = t.trunk.CFrame
-                    local rightVector = treeCFrame.RightVector
-                    local targetPosition = treeCFrame.Position + rightVector * 3
-                    hrp.CFrame = CFrame.new(targetPosition)
-                    task.wait(0.25)
-
-                    -- Активация топора
-                    local axe = getAxe()
-                    if axe then
-                        if axe.Parent == LocalPlayer.Backpack then
-                            axe.Parent = char
-                            task.wait(0.15)
-                        end
-
-                        while t.tree.Parent and treeFarmActive do
-                            pcall(function() axe:Activate() end)
-                            local args = {
-                                t.tree,
-                                axe,
-                                "1_8264699301", -- item code, можно убрать
-                                t.trunk.CFrame
-                            }
-                            pcall(function() ToolDamageObject:InvokeServer(unpack(args)) end)
-                            task.wait(1)
-                        end
-                    end
-                end
-                task.wait(0.5)
-            end
-            task.wait(1)
-        end
-    end)
-end
-
-local function stopTreeFarm()
-    treeFarmActive = false
-end
-getgenv().autofarm=false
-tab2.create_button({
-    name = 'Auto Tree/Bunny Farm (requires axe in hand)',
-    flag = 'AutoTreeFarmFlag',
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-    local Noclip = nil
-local Clip = nil
-
-function noclip()
-    Clip = false
-    local function Nocl()
-        if Clip == false and game.Players.LocalPlayer.Character ~= nil then
-            for _,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-                if v:IsA('BasePart') and v.CanCollide and v.Name ~= floatName then
-                    v.CanCollide = false
-                end
-            end
-        end
-        wait(0.21) -- basic optimization
-    end
-    Noclip = game:GetService('RunService').Stepped:Connect(Nocl)
-end
-
-function clip()
-    if Noclip then Noclip:Disconnect() end
-    Clip = true
-end
- noclip()
- local l = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-if state then task.wait(2) getgenv().autofarm=state end 
-
-while getgenv().autofarm and task.wait() do
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local VirtualInputManager = game:GetService("VirtualInputManager")
-
-local player = Players.LocalPlayer
-local camera = workspace.CurrentCamera
-
-    local x = camera.ViewportSize.X / 2
-    local y = camera.ViewportSize.Y / 2
-
-    VirtualInputManager:SendMouseButtonEvent(x, y, 0, true, game, 0)
-
-    VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, game, 0)
- 
-
-
-local VirtualUser = game:service("VirtualUser")
-game:GetService("Players").LocalPlayer.Idled:Connect(function()
-    VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-    task.wait()
-    VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-end)
-
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = l + Vector3.new(0,30,0)
-
-local lp = game:GetService("Players").LocalPlayer
-local char = lp.Character or lp.CharacterAdded:Wait()
-local hrp = char:WaitForChild("HumanoidRootPart")
-local targetCF = hrp.CFrame + Vector3.new(0, 10, 0)
-local foundTree = false
-local foundBunny = false
-
-local function tpModel(model)
-    local boxCF = model:GetBoundingBox()
-    local offset = targetCF.Position - boxCF.Position
-    for _, part in pairs(model:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CFrame = part.CFrame + offset
-        end
-    end
-end
-
-local function tpFolder(folder)
-    for _, obj in pairs(folder:GetDescendants()) do
-        if obj.Name == "Small Tree" then
-            foundTree = true
-            if obj:IsA("Model") then
-                tpModel(obj)
-            elseif obj:IsA("BasePart") then
-                obj.CFrame = targetCF
-            end
-        end
-    end
-end
-
-local map = workspace:WaitForChild("Map")
-if map:FindFirstChild("Landmarks") then tpFolder(map.Landmarks) end
-if map:FindFirstChild("Foliage") then tpFolder(map.Foliage) end
-
-for _, obj in pairs(workspace:WaitForChild("Characters"):GetChildren()) do
-    if obj.Name == "Bunny" or obj.Name == "Wolf" and obj:FindFirstChild("HumanoidRootPart") then
-        foundBunny = true
-        obj.HumanoidRootPart.CFrame = hrp.CFrame
-    end
-end
-
-if not foundTree and not foundBunny then
-    clip()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(7.93, 4.00, 3.69)
-    getgenv().autofarm=false
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(7.93, 4.00, 3.69)
-
-end
-
-end
-    end
-})
-
-tab2.create_slider({
-    name = 'Walkspeed',
-    flag = 'flyspeed',
-
-    section = 'left',
-
-    value = getgenv().speedValue or 28,
-    minimum_value = 10,
-    maximum_value = 1000,
-
-    callback = function(value: number)
-        local Players = game:GetService("Players")
-        local LocalPlayer = Players.LocalPlayer
-
-
-
-        getgenv().speedValue = value
-
-            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid.WalkSpeed = getgenv().speedValue
-            end
+        setclipboard(Linkvertise_Link)
        
-            end
+
+        local label = linkvertiseButton:FindFirstChildWhichIsA("TextLabel")
+        if not label then return end
+
+        local originalText = label.Text
+        label.Text = "Copied to clipboard!"
+
+        task.delay(2, function()
+            label.Text = originalText
+        end)
+    end
 })
 
-tab2.create_button({
-    name = 'Instant Interact',
-    flag = 'Bringlog',
 
+local discordButton
+
+discordButton = tab.create_button({
+    name = 'Join Discord for any issue',
+    flag = 'bring',
     section = 'left',
     enabled = false,
 
     callback = function(state: boolean)
-      local function setupPrompt(p)
-                if p:IsA("ProximityPrompt") then
-                    p.RequiresLineOfSight = false
-                    p.MaxActivationDistance = 15
-                    p.HoldDuration = 0
-                   
-                end
-            end
+        setclipboard(Discord_Invite)
+      
+        local label = discordButton:FindFirstChildWhichIsA("TextLabel")
+        if not label then return end
 
-            for _, p in ipairs(workspace:GetDescendants()) do setupPrompt(p) end
-            workspace.DescendantAdded:Connect(setupPrompt)
-    end
-})
-tab.create_button({
-    name = 'Teleport To Camp',
-    flag = 'Bringlog',
+        local originalText = label.Text
+        label.Text = "Invite copied!"
 
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-      local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-local HRP = Character:WaitForChild("HumanoidRootPart")
-
-HRP.CFrame = CFrame.new(
-    13.287363052368164, 3.999999761581421, 0.36212217807769775,
-    0.6022269129753113, -2.275036159460342e-08, 0.7983249425888062,
-    6.430457055728311e-09, 1, 2.364672191390582e-08,
-    -0.7983249425888062, -9.1070981866892e-09, 0.6022269129753113
-)
-    end
-})
-tab.create_button({
-    name = 'Teleport To Trader',
-    flag = 'Bringlog',
-
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-    local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-local HRP = Character:WaitForChild("HumanoidRootPart")
-
-local traderPos = Vector3.new(-37.08, 3.98, -16.33)
-HRP.CFrame = CFrame.new(traderPos)
-    end
-})
-tab.create_button({
-    name = 'Teleport To Random Tree',
-    flag = 'Bringlog',
-    section = 'left',
-    callback = function()
-        local Players = game:GetService("Players")
-        local LocalPlayer = Players.LocalPlayer
-        local Workspace = game:GetService("Workspace")
-
-        local function teleportToRandomTree()
-            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            local hrp = character:FindFirstChild("HumanoidRootPart")
-            if not hrp then return end
-
-            local map = Workspace:FindFirstChild("Map")
-            if not map then return end
-
-            local foliage = map:FindFirstChild("Foliage") or map:FindFirstChild("Landmarks")
-            if not foliage then return end
-
-            local trees = {}
-            for _, obj in ipairs(foliage:GetChildren()) do
-                if obj.Name == "Small Tree" and obj:IsA("Model") then
-                    local trunk = obj:FindFirstChild("Trunk") or obj.PrimaryPart
-                    if trunk then
-                        table.insert(trees, trunk)
-                    end
-                end
-            end
-
-            if #trees > 0 then
-                local trunk = trees[math.random(1, #trees)]
-                local treeCFrame = trunk.CFrame
-                local rightVector = treeCFrame.RightVector
-                local targetPosition = treeCFrame.Position + rightVector * 3
-                hrp.CFrame = CFrame.new(targetPosition)
-            end
-        end
-
-        teleportToRandomTree()
-    end
-})
-local ESPEnabled = false
-local ESPFolder = {}
-local tracers = {}
-local billboardTags = {}
-local espConnection = nil
-local scanTask = nil
-
-tab3.create_toggle({
-    name = 'Entity ESP',
-    flag = 'Bringlog',
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        ESPEnabled = state
-
-        local Players = game:GetService("Players")
-        local RunService = game:GetService("RunService")
-        local Workspace = game:GetService("Workspace")
-        local Camera = Workspace.CurrentCamera
-        local LocalPlayer = Players.LocalPlayer
-
-        local espSettings = {
-            PlayerESP = true,
-            Fairy = false,
-            Wolf = false,
-            Bunny = false,
-            Cultist = false,
-            CrossBow = false,
-            PeltTrader = false,
-            NameColor = Color3.fromRGB(255, 255, 255),
-            NameSize = 16,
-            HPBarSize = Vector2.new(60, 6),
-            BillboardOverheadNames = true,
-            MaxDistance = 500
-        }
-
-        local function createBillboard(model)
-            if billboardTags[model] then return end
-            local head = model:FindFirstChild("Head")
-            if not head then return end
-
-            local gui = Instance.new("BillboardGui")
-            gui.Name = "NameTag"
-            gui.Adornee = head
-            gui.AlwaysOnTop = true
-            gui.Size = UDim2.new(0, 100, 0, 20)
-            gui.StudsOffset = Vector3.new(0, 2, 0)
-
-            local label = Instance.new("TextLabel")
-            label.Parent = gui
-            label.Size = UDim2.new(1, 0, 1, 0)
-            label.BackgroundTransparency = 1
-            label.Text = model.Name
-            label.TextColor3 = espSettings.NameColor
-            label.TextStrokeTransparency = 0.5
-            label.TextScaled = true
-            label.Font = Enum.Font.SourceSansBold
-
-            gui.Parent = head
-            billboardTags[model] = gui
-        end
-
-        local function removeBillboards()
-            for model, gui in pairs(billboardTags) do
-                if gui and gui.Parent then
-                    gui:Destroy()
-                end
-            end
-            billboardTags = {}
-        end
-
-        local function createESP(model)
-            if ESPFolder[model] then return end
-            local head = model:FindFirstChild("Head") or model:FindFirstChildWhichIsA("BasePart")
-            if not head then return end
-
-            ESPFolder[model] = {
-                head = head,
-                name = Drawing.new("Text"),
-                hpBack = Drawing.new("Square"),
-                hpBar = Drawing.new("Square"),
-                model = model
-            }
-
-            local d = ESPFolder[model]
-            d.name.Size = espSettings.NameSize
-            d.name.Center = true
-            d.name.Outline = true
-            d.name.Color = espSettings.NameColor
-            d.name.Visible = false
-
-            d.hpBack.Color = Color3.new(0, 0, 0)
-            d.hpBack.Filled = true
-            d.hpBack.Transparency = 0.7
-            d.hpBack.Visible = false
-
-            d.hpBar.Color = Color3.new(0, 1, 0)
-            d.hpBar.Filled = true
-            d.hpBar.Transparency = 0.9
-            d.hpBar.Visible = false
-        end
-
-        local function clearESP()
-            for _, data in pairs(ESPFolder) do
-                if data.name then data.name:Remove() end
-                if data.hpBack then data.hpBack:Remove() end
-                if data.hpBar then data.hpBar:Remove() end
-            end
-            ESPFolder = {}
-
-            for _, line in pairs(tracers) do
-                line:Remove()
-            end
-            tracers = {}
-
-            removeBillboards()
-        end
-
-        if ESPEnabled then
-            scanTask = task.spawn(function()
-                while ESPEnabled do
-                    task.wait(1)
-                    for _, model in pairs(workspace:GetDescendants()) do
-                        if model:IsA("Model") and model:FindFirstChild("Head") then
-                            if not ESPFolder[model] and (Players:GetPlayerFromCharacter(model) or model:IsDescendantOf(workspace.Characters)) then
-                                createESP(model)
-                            end
-                        end
-                        if model:IsA("Model") and model:IsDescendantOf(workspace.Characters) and not billboardTags[model] and espSettings.BillboardOverheadNames then
-                            createBillboard(model)
-                        end
-                    end
-                end
-            end)
-
-            espConnection = RunService.Heartbeat:Connect(function(dt)
-                for i = #tracers, 1, -1 do
-                    tracers[i].Visible = false
-                end
-
-                local screenMid = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
-                local i = 1
-
-                for model, data in pairs(ESPFolder) do
-                    local head = data.head
-                    if not model:IsDescendantOf(workspace) then
-                        data.name:Remove()
-                        data.hpBack:Remove()
-                        data.hpBar:Remove()
-                        ESPFolder[model] = nil
-                        continue
-                    end
-
-                    local isPlayer = Players:GetPlayerFromCharacter(model)
-                    local visible = false
-                    local labelText = ""
-                    local dist = (Camera.CFrame.Position - head.Position).Magnitude
-
-                    if dist > espSettings.MaxDistance then
-                        data.name.Visible = false
-                        data.hpBack.Visible = false
-                        data.hpBar.Visible = false
-                        continue
-                    end
-
-                    if isPlayer and espSettings.PlayerESP then
-                        labelText = model.Name .. " {" .. math.floor(dist) .. "m}"
-                        visible = true
-                    elseif not isPlayer then
-                        local n = model.Name:lower()
-                        if espSettings.Fairy and n:find("fairy") then
-                            labelText = "Fairy {" .. math.floor(dist) .. "m}"
-                            visible = true
-                        elseif espSettings.Wolf and (n:find("wolf") or n:find("alpha")) then
-                            labelText = "Wolf {" .. math.floor(dist) .. "m}"
-                            visible = true
-                        elseif espSettings.Bunny and n:find("bunny") then
-                            labelText = "Bunny {" .. math.floor(dist) .. "m}"
-                            visible = true
-                        elseif espSettings.Cultist and n:find("cultist") and not n:find("cross") then
-                            labelText = "Cultist {" .. math.floor(dist) .. "m}"
-                            visible = true
-                        elseif espSettings.CrossBow and n:find("cross") then
-                            labelText = "Crossbow Cultist {" .. math.floor(dist) .. "m}"
-                            visible = true
-                        elseif espSettings.PeltTrader and n:find("pelt") then
-                            labelText = "Pelt Trader {" .. math.floor(dist) .. "m}"
-                            visible = true
-                        end
-                    end
-
-                    if visible then
-                        local pos, onScreen = Camera:WorldToViewportPoint(head.Position)
-                        if onScreen then
-                            data.name.Text = labelText
-                            data.name.Position = Vector2.new(pos.X, pos.Y - 25)
-                            data.name.Visible = true
-
-                            local humanoid = model:FindFirstChildOfClass("Humanoid")
-                            if humanoid and humanoid.Health > 0 then
-                                local hp = math.clamp(humanoid.Health / humanoid.MaxHealth, 0, 1)
-                                local bw, bh = espSettings.HPBarSize.X, espSettings.HPBarSize.Y
-                                local x = pos.X - bw / 2
-                                local y = pos.Y - 5
-
-                                data.hpBack.Position = Vector2.new(x, y)
-                                data.hpBack.Size = Vector2.new(bw, bh)
-                                data.hpBack.Visible = true
-
-                                data.hpBar.Position = Vector2.new(x, y)
-                                data.hpBar.Size = Vector2.new(bw * hp, bh)
-                                data.hpBar.Color = Color3.new(1 - hp, hp, 0)
-                                data.hpBar.Visible = true
-                            else
-                                data.hpBack.Visible = false
-                                data.hpBar.Visible = false
-                            end
-
-                            if not tracers[i] then
-                                tracers[i] = Drawing.new("Line")
-                            end
-                            local line = tracers[i]
-                            line.From = screenMid - Vector2.new(0, 10)
-                            line.To = Vector2.new(pos.X, pos.Y)
-                            line.Color = Color3.fromRGB(255, 0, 0)
-                            line.Thickness = 1
-                            line.Visible = true
-                            i += 1
-                        else
-                            data.name.Visible = false
-                            data.hpBack.Visible = false
-                            data.hpBar.Visible = false
-                        end
-                    else
-                        data.name.Visible = false
-                        data.hpBack.Visible = false
-                        data.hpBar.Visible = false
-                    end
-                end
-            end)
-        else
-            if espConnection then
-                espConnection:Disconnect()
-                espConnection = nil
-            end
-            if scanTask then
-                task.cancel(scanTask)
-                scanTask = nil
-            end
-            clearESP()
-        end
-    end
-})
-
-local itemNameTags = {}
-
-tab3.create_toggle({
-    name = 'Item ESP',
-    flag = 'Bringlog',
-    section = 'left',
-    enabled = false,
-
-    callback = function(state: boolean)
-        local Workspace = game:GetService("Workspace")
-
-        local function createItemNameTag(item)
-            if itemNameTags[item] then return end
-            local adornee = item:FindFirstChild("Handle") or item:FindFirstChildWhichIsA("BasePart")
-            if not adornee then return end
-
-            local tag = Instance.new("BillboardGui")
-            tag.Name = "ItemNameTag"
-            tag.Adornee = adornee
-            tag.AlwaysOnTop = true
-            tag.Size = UDim2.new(0, 100, 0, 20)
-            tag.StudsOffset = Vector3.new(0, 2, 0)
-
-            local label = Instance.new("TextLabel")
-            label.Size = UDim2.new(1, 0, 1, 0)
-            label.BackgroundTransparency = 1
-            label.Text = item.Name
-            label.TextColor3 = Color3.fromRGB(255, 255, 255)
-            label.TextStrokeTransparency = 0.5
-            label.TextScaled = true
-            label.Font = Enum.Font.SourceSansBold
-            label.Parent = tag
-
-            tag.Parent = adornee
-            itemNameTags[item] = tag
-        end
-
-        local function removeAllItemNameTags()
-            for item, tag in pairs(itemNameTags) do
-                if tag and tag.Parent then
-                    tag:Destroy()
-                end
-            end
-            itemNameTags = {}
-        end
-
-        if state then
-            for _, item in ipairs(Workspace.Items:GetChildren()) do
-                if item:IsA("Model") or item:IsA("BasePart") then
-                    createItemNameTag(item)
-                end
-            end
-
-            Workspace.Items.ChildAdded:Connect(function(child)
-                task.wait(0.1)
-                if state and (child:IsA("Model") or child:IsA("BasePart")) then
-                    createItemNameTag(child)
-                end
-            end)
-
-            Workspace.Items.ChildRemoved:Connect(function(child)
-                if itemNameTags[child] then
-                    itemNameTags[child]:Destroy()
-                    itemNameTags[child] = nil
-                end
-            end)
-        else
-            removeAllItemNameTags()
-        end
+        task.delay(2, function()
+            label.Text = originalText
+        end)
     end
 })
 
