@@ -1,3 +1,27 @@
+
+getgenv().autobond=nil
+getgenv().auto_bond=nil
+getgenv().auto_win=nil
+getgenv().autowin=nil
+
+local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local t = tick()
+while gui:FindFirstChild("DetailTextLabel", true) and tick() - t < 10 do task.wait() end
+if gui:FindFirstChild("DetailTextLabel", true) then
+  
+end
+
+local names = {"golden", "default", "cattle", "armor", "wooden", "ghost", "passenger"}
+local obj
+
+for _, name in ipairs(names) do
+    local found = workspace:FindFirstChild(name)
+    if found then
+        obj = found
+        break
+    end
+end
+--// library script private
 if not getgenv().moon then
 getgenv().namehub = "Viridian | .gg/getviridian" else
 getgenv().namehub = "Moon | .gg/moondiety"
@@ -1944,4 +1968,5 @@ end)
         return Tab
     end
 
-local main = Library.new()
+
+return Library
