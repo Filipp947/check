@@ -1,26 +1,4 @@
 
-getgenv().autobond=nil
-getgenv().auto_bond=nil
-getgenv().auto_win=nil
-getgenv().autowin=nil
-
-local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-local t = tick()
-while gui:FindFirstChild("DetailTextLabel", true) and tick() - t < 10 do task.wait() end
-if gui:FindFirstChild("DetailTextLabel", true) then
-  
-end
-
-local names = {"golden", "default", "cattle", "armor", "wooden", "ghost", "passenger"}
-local obj
-
-for _, name in ipairs(names) do
-    local found = workspace:FindFirstChild(name)
-    if found then
-        obj = found
-        break
-    end
-end
 --// library script private
 
 local UserInputService = game:GetService('UserInputService')
@@ -31,6 +9,8 @@ local CoreGui = game:GetService('CoreGui')
 local UserInputService = game:GetService("UserInputService")
 
 local Mouse = LocalPlayer:GetMouse();
+local isSettingKeybind = false
+local keybindListener
 
 
 local Library = {
@@ -499,7 +479,7 @@ end)
         Logo.Position = UDim2.new(0, 8, 0.5, 0)
         Logo.Size = UDim2.new(0, 17, 0, 17)
         Logo.BackgroundTransparency = 1
-        print(iconId)
+       
            Logo.Image = "rbxassetid://" .. tostring(iconId or "")
         Logo.ImageTransparency = 0.3
         Logo.ZIndex = 3
