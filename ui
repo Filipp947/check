@@ -3,6 +3,7 @@ getgenv().autobond=nil
 getgenv().auto_bond=nil
 getgenv().auto_win=nil
 getgenv().autowin=nil
+
 local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 local t = tick()
 while gui:FindFirstChild("DetailTextLabel", true) and tick() - t < 10 do task.wait() end
@@ -2214,7 +2215,7 @@ tab1.create_multidropdown({
     name = "Select items",
     flag = "selectitems",
     section = "left",
-    options = {"Bond", "Gold", "Silver", "Coal", "Brain", "Jade", "Strange", "Shotgun", "Rifle"},
+    options = {"Bond", "Gold", "Silver", "Coal", "Brain", "Vampire", "Snake", "Firework", "Bandage", "Jade", "Strange", "Shotgun", "Rifle"},
     callback = function(selectedItems)
         getgenv().bringitem = selectedItems
     end
