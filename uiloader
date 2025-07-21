@@ -165,7 +165,7 @@ function Library:new()
         Shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
     Shadow.Size =  UDim2.new(0.71, 0, 0.91, 0)
     else
-        Shadow.Position = UDim2.new(0.5, 0, 0.35, 0)
+        Shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
         Shadow.Size = UDim2.new(0.4, 0, 0.4, 0)
     end
 
@@ -183,7 +183,7 @@ function Library:new()
     
 
     if UserInputService.TouchEnabled then
-        Container.Position = UDim2.new(0.5, 0, 0.35, 0)
+        Container.Position = UDim2.new(0.5, 0, 0.5, 0)
         Container.Size = UDim2.new(0.7, 0, 0.9, 0)
 
     else
