@@ -394,7 +394,7 @@ UserInputService.InputBegan:Connect(function(input, process)
     if isSettingKeybind then return end
     if not Library.exist() then return end
 
-    local chosenKey = Library.Flags.fly_key or "H"
+    local chosenKey = Library.Flags.toggleui or "H"
     if input.KeyCode == Enum.KeyCode[chosenKey] then
         Library.visible(container)
     end
