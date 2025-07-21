@@ -76,16 +76,16 @@ function Library:save_flags()
     if not Library.exist() then return end
 
     local flags = HttpService:JSONEncode(Library.Flags)
-    writefile(`cac hub/{game.GameId}.lua`, flags)
+    --writefile(`cac hub/{game.GameId}.lua`, flags)
 end
 
 function Library:load_flags()
-    if not isfile(`cac hub/{game.GameId}.lua`) then Library.save_flags() return end
+   -- if not isfile(`cac hub/{game.GameId}.lua`) then Library.save_flags() return end
 
-    local flags = readfile(`cac hub/{game.GameId}.lua`)
-    if not flags then Library.save_flags() return end
+   -- local flags = readfile(`cac hub/{game.GameId}.lua`)
+    --if not flags then Library.save_flags() return end
 
-    Library.Flags = HttpService:JSONDecode(flags)
+  --  Library.Flags = HttpService:JSONDecode(flags)
 end
 
 Library.load_flags()
