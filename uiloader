@@ -1,5 +1,3 @@
---// made by govorgub1
---// library script private
 
 local UserInputService = game:GetService('UserInputService')
 local LocalPlayer = game:GetService('Players').LocalPlayer
@@ -9,10 +7,8 @@ local CoreGui = game:GetService('CoreGui')
 local UserInputService = game:GetService("UserInputService")
 
 local Mouse = LocalPlayer:GetMouse();
-local isSettingKeybind = false
-local keybindListener
 
-
+local contain123
 local Library = {
     connections = {};
     Flags = {};
@@ -56,16 +52,11 @@ function Library:save_flags()
     if not Library.exist() then return end
 
     local flags = HttpService:JSONEncode(Library.Flags)
-    --writefile(`cac hub/{game.GameId}.lua`, flags)
+   -- writefile(`cac hub/{game.GameId}.lua`, flags)
 end
 
 function Library:load_flags()
-   -- if not isfile(`cac hub/{game.GameId}.lua`) then Library.save_flags() return end
-
-   -- local flags = readfile(`cac hub/{game.GameId}.lua`)
-    --if not flags then Library.save_flags() return end
-
-  --  Library.Flags = HttpService:JSONDecode(flags)
+  
 end
 
 Library.load_flags()
@@ -107,10 +98,10 @@ function Library:close()
         if Library.enabled then
             return
         end
-
+        if Container then
         self.Container.Visible = false
         self.Shadow.Visible = false
-        self.Mobile.Modal = false
+        self.Mobile.Modal = false end
     end)
 end
 
@@ -227,7 +218,7 @@ function Library:new()
     TextLabel.Position = UDim2.new(0.0338254446, 0, 0.7, 0)
     TextLabel.Size = UDim2.new(1 - positionX, 0, 0, 16) 
     TextLabel.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
-    TextLabel.Text = getgenv().namehub
+    TextLabel.Text = getgenv().namehub or "getgenv().namehub='govorgub'"
     TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TextLabel.TextScaled = false
     TextLabel.TextSize = 14.000
@@ -454,7 +445,7 @@ end)
         end
     end
 
-  function Tab:create_tab()
+  function Tab:create_tab(name, iconId)
          local tab = Instance.new("TextButton")
         tab.Name = "Tab"
         tab.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
@@ -480,14 +471,8 @@ end)
         Logo.Position = UDim2.new(0, 8, 0.5, 0)
         Logo.Size = UDim2.new(0, 17, 0, 17)
         Logo.BackgroundTransparency = 1
-        if self=='Auto' then
-        Logo.Image = "rbxassetid://7734051454" end
-        if self=='Main' then
-        Logo.Image = "rbxassetid://17290697757" end
-        if self=='Teleports' then
-        Logo.Image = "rbxassetid://7734020989" end  
-        if self=='Settings' then
-        Logo.Image = "rbxassetid://8997386997" end      
+       
+           Logo.Image = "rbxassetid://" .. tostring(iconId or "")
         Logo.ImageTransparency = 0.3
         Logo.ZIndex = 3
 
@@ -499,7 +484,7 @@ end)
         TextLabel.Size = UDim2.new(1, -(Logo.Position.X.Offset + Logo.Size.X.Offset + 16), 0, 15)
         TextLabel.BackgroundTransparency = 1
         TextLabel.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
-        TextLabel.Text = self
+        TextLabel.Text = name
         TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         TextLabel.TextScaled = true
         TextLabel.TextWrapped = true
@@ -1807,5 +1792,6 @@ end)
         end
         return Tab
     end
+
 
 return Library
