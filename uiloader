@@ -563,53 +563,12 @@ end)
         end)
 
 
-        local right_section = Instance.new("ScrollingFrame")
-        right_section.Name = "RightSection"
-        right_section.Active = true
-        right_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        right_section.BackgroundTransparency = 1.000
-        right_section.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        right_section.BorderSizePixel = 0
-        right_section.Position = UDim2.new(0.662374794, 0, 0.126760557, 0)
-        right_section.Size = UDim2.new(0, 215, 0, 372)
-        right_section.AutomaticCanvasSize = Enum.AutomaticSize.XY
-        right_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
-        right_section.ScrollBarThickness = 0
-
-        local rightsectionlist = Instance.new("UIListLayout")
-        rightsectionlist.Parent = right_section
-
-        rightsectionlist.HorizontalAlignment = Enum.HorizontalAlignment.Center
-        rightsectionlist.SortOrder = Enum.SortOrder.LayoutOrder
-        rightsectionlist.Padding = UDim.new(0, 7)
-
-        if container.Container:FindFirstChild('RightSection') then
-            left_section.Visible = false
-            right_section.Visible = false
-        else
-            Tab.open_tab({
-                tab = tab,
-                left_section = left_section,
-                right_section = right_section
-            })
-        end
-
-        left_section.Parent = container.Container
-        right_section.Parent = container.Container
-
-        tab.MouseButton1Click:Connect(function()
-            Tab.open_tab({
-                tab = tab,
-                left_section = left_section,
-                right_section = right_section
-            })
-        end)
 
         local Module = {}
 
 
         function Module:create_title()
-            local section = self.section == 'left' and left_section or right_section
+            local section = self.section == 'left' and left_section
 
             local title = Instance.new("TextLabel")
             title.Name = "Title"
@@ -666,7 +625,7 @@ end)
         end
 
         function Module:create_toggle()
-            local section = self.section == 'left' and left_section or right_section
+            local section = self.section == 'left' and left_section
 
             local toggle = Instance.new("TextButton")
             toggle.Name = "Toggle"
@@ -958,7 +917,7 @@ end
             function Module:create_button(config)
         
 
-            local section = self.section == "left" and left_section or right_section
+            local section = self.section == "left" and left_section
 
             local button = Instance.new("TextButton")
             button.Name = "Button"
@@ -1077,7 +1036,7 @@ end
 
      function Module:create_slider()
     local drag = false
-    local section = self.section == 'left' and left_section or right_section
+    local section = self.section == 'left' and left_section
 
     local slider = Instance.new("TextButton")
     slider.Name = "Slider"
@@ -1220,7 +1179,7 @@ end
     end)
 end
 function Module:create_multidropdown()
-    local section = self.section == 'left' and left_section or right_section
+    local section = self.section == 'left' and left_section
     local list_size = 6
     local open = false
 
@@ -1503,7 +1462,7 @@ function Module:create_multidropdown()
 end
 
 function Module:create_dropdown()
-    local section = self.section == 'left' and left_section or right_section
+    local section = self.section == 'left' and left_section
     local list_size = 6
     local open = false
 
@@ -1743,7 +1702,7 @@ end
 
 
         function Module:create_textbox()
-            local section = self.section == 'left' and left_section or right_section
+            local section = self.section == 'left' and left_section
             local Textbox = {}
             local textbox = Instance.new("TextButton")
             textbox.Name = "TextBox"
@@ -1823,7 +1782,7 @@ end
             return Textbox;
         end
         function Module:create_keybind()
-        local section = self.section == 'left' and left_section or right_section
+        local section = self.section == 'left' and left_section
         local keybind = Instance.new("TextButton")
         keybind.Name = "Keybind"
         keybind.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
