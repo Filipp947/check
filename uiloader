@@ -1,4 +1,4 @@
-
+--// made by govorgub
 --// library script private
 
 local UserInputService = game:GetService('UserInputService')
@@ -563,6 +563,17 @@ end)
         end)
 
 
+     
+
+        left_section.Parent = container.Container
+       
+
+        tab.MouseButton1Click:Connect(function()
+            Tab.open_tab({
+                tab = tab,
+                left_section = left_section
+            })
+        end)
 
         local Module = {}
 
