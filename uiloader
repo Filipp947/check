@@ -1,3 +1,4 @@
+--// govorgub
 
 local UserInputService = game:GetService('UserInputService')
 local LocalPlayer = game:GetService('Players').LocalPlayer
@@ -8,7 +9,6 @@ local UserInputService = game:GetService("UserInputService")
 
 local Mouse = LocalPlayer:GetMouse();
 
-local contain123
 local Library = {
 connections = {};
     Flags = {};
@@ -342,7 +342,7 @@ function Library:new()
     Icon.Position = UDim2.new(0.268000007, 0, 0.5, 0)
     Icon.Size = UDim2.new(0, 15, 0, 15)
     Icon.Image = "rbxassetid://17183279677"
-    contain123 = container
+    getgenv().contain123= container
     container.Container.InputBegan:Connect(function(input: InputObject)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             Library.dragging = true
@@ -733,28 +733,28 @@ end)
             TextLabel.Text = self.name
 
           if not Library.Flags[self.flag] then
-				Library.Flags[self.flag] = self.enabled
-			end
+                Library.Flags[self.flag] = self.enabled
+            end
 
-			self.callback(Library.Flags[self.flag])
-			
-			Module.update_toggle({
-				state = Library.Flags[self.flag],
-				toggle = toggle
-			})
+            self.callback(Library.Flags[self.flag])
+            
+            Module.update_toggle({
+                state = Library.Flags[self.flag],
+                toggle = toggle
+            })
 
-			toggle.MouseButton1Click:Connect(function()
-				Library.Flags[self.flag] = not Library.Flags[self.flag]
-				Library.save_flags()
+            toggle.MouseButton1Click:Connect(function()
+                Library.Flags[self.flag] = not Library.Flags[self.flag]
+                Library.save_flags()
 
-				Module.update_toggle({
-					state = Library.Flags[self.flag],
-					toggle = toggle
-				})
+                Module.update_toggle({
+                    state = Library.Flags[self.flag],
+                    toggle = toggle
+                })
 
-				self.callback(Library.Flags[self.flag])
-			end)
-		end
+                self.callback(Library.Flags[self.flag])
+            end)
+        end
 
             function Module:create_button(config)
         
