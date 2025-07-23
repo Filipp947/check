@@ -10,7 +10,7 @@ local Mouse = LocalPlayer:GetMouse();
 
 local contain123
 local Library = {
-    connections = {};
+connections = {};
     Flags = {};
     Enabled = true;
     slider_drag = false;
@@ -21,25 +21,29 @@ local Library = {
 }
 
 
-function Library:disconnect()
-    for _, value in Library.connections do
-        if not Library.connections[value] then
-            continue
-        end
+if not isfolder("cac hub") then
+    makefolder("cac hub")
+end
 
-        Library.connections[value]:Disconnect()
-        Library.connections[value] = nil
-    end
+function Library:disconnect()
+for _, value in Library.connections do
+if not Library.connections[value] then
+continue
+end
+
+Library.connections[value]:Disconnect()
+Library.connections[value] = nil
+end
 end
 
 function Library:clear()
-    for _, object in CoreGui:GetChildren() do
-        if object.Name ~= "cac" then
-            continue
-        end
-    
-        object:Destroy()
-    end
+for _, object in CoreGui:GetChildren() do
+if object.Name ~= "cac" then
+continue
+end
+
+object:Destroy()
+end
 end
 
 function Library:exist()
@@ -52,16 +56,20 @@ function Library:save_flags()
     if not Library.exist() then return end
 
     local flags = HttpService:JSONEncode(Library.Flags)
-   -- writefile(`cac hub/{game.GameId}.lua`, flags)
+    writefile(`cac hub/{game.GameId}.lua`, flags)
 end
 
 function Library:load_flags()
-  
+    if not isfile(`cac hub/{game.GameId}.lua`) then Library.save_flags() return end
+
+    local flags = readfile(`cac hub/{game.GameId}.lua`)
+    if not flags then Library.save_flags() return end
+
+    Library.Flags = HttpService:JSONDecode(flags)
 end
 
 Library.load_flags()
 Library.clear()
-
 
 function Library:open()
     self.Container.Visible = true
@@ -138,7 +146,7 @@ end
 
 function Library:new()
     local container = Instance.new("ScreenGui")
-    container.Name = "cac"
+    container.Name = "cfg"
     container.Parent = CoreGui
 
     Library.core = container
@@ -724,28 +732,30 @@ end)
             TextLabel.TextXAlignment = Enum.TextXAlignment.Left
             TextLabel.Text = self.name
 
-            Library.Flags[self.flag] = false
+          if not Library.Flags[self.flag] then
+				Library.Flags[self.flag] = self.enabled
+			end
 
-            self.callback(false)
+			self.callback(Library.Flags[self.flag])
+			
+			Module.update_toggle({
+				state = Library.Flags[self.flag],
+				toggle = toggle
+			})
 
-            Module.update_toggle({
-                state = false,
-                toggle = toggle
-            })
+			toggle.MouseButton1Click:Connect(function()
+				Library.Flags[self.flag] = not Library.Flags[self.flag]
+				Library.save_flags()
 
+				Module.update_toggle({
+					state = Library.Flags[self.flag],
+					toggle = toggle
+				})
 
-            toggle.MouseButton1Click:Connect(function()
-                Library.Flags[self.flag] = not Library.Flags[self.flag]
-                Library.save_flags()
+				self.callback(Library.Flags[self.flag])
+			end)
+		end
 
-                Module.update_toggle({
-                    state = Library.Flags[self.flag],
-                    toggle = toggle
-                })
-
-                self.callback(Library.Flags[self.flag])
-            end)
-        end
             function Module:create_button(config)
         
 
@@ -1424,7 +1434,7 @@ function Module:create_dropdown()
     local CLOSED_HEIGHT = 50
     local OPTION_HEIGHT = 23
 
-    Dropdown.selectedOption = nil -- текущий выбор
+    Dropdown.selectedOption = nil 
 
     function Dropdown:open()
         open = true
@@ -1476,7 +1486,6 @@ function Module:create_dropdown()
             new_option.Parent = Options
             new_option.Text = value
 
-            -- Подсвечиваем только текущий выбранный option
             if value == self.selectedOption then
                 new_option.TextTransparency = 0
             else
@@ -1508,8 +1517,6 @@ function Module:create_dropdown()
             end)
         end
     end
-
-    -- Инициализируем с пустым выбором
     Dropdown.selectedOption = nil
     TextLabel.Text = self.name
 
@@ -1672,7 +1679,6 @@ end
     UICorner_2.CornerRadius = UDim.new(0, 4)
     UICorner_2.Parent = TextBox
 
-    -- Реагируем на любое изменение текста
     TextBox:GetPropertyChangedSignal("Text"):Connect(function()
         Library.Flags[self.flag] = TextBox.Text
         Library.save_flags()
@@ -1792,6 +1798,7 @@ end)
         end
         return Tab
     end
+
 
 
 return Library
