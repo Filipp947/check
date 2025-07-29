@@ -70,13 +70,16 @@ end
 
 Library.load_flags()
 Library.clear()
-
 function Library:open()
     self.Container.Visible = true
     self.Shadow.Visible = true
     self.Mobile.Modal = true
 
-    local containerSize, shadowSize
+    if self.Mobile and self.Mobile:FindFirstChild("mobile_button") then
+        self.Mobile.mobile_button.Visible = false
+    end
+
+    local containerSize
     if UserInputService.TouchEnabled then
         containerSize = UDim2.new(0.7, 0, 0.7, 0)
     else
@@ -88,7 +91,7 @@ function Library:open()
     }):Play()
 
     TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
-        Size = shadowSize
+        Size = containerSize 
     }):Play()
 end
 
@@ -103,13 +106,17 @@ function Library:close()
 
     main_tween:Play()
     main_tween.Completed:Once(function()
-        if Library.enabled then
-            return
-        end
+        if Library.enabled then return end
+
         if Container then
-        self.Container.Visible = false
-        self.Shadow.Visible = false
-        self.Mobile.Modal = false end
+            self.Container.Visible = false
+            self.Shadow.Visible = false
+            self.Mobile.Modal = false
+
+            if self.Mobile and self.Mobile:FindFirstChild("mobile_button") then
+                self.Mobile.mobile_button.Visible = true
+            end
+        end
     end)
 end
 
@@ -534,7 +541,7 @@ end)
         UIGradient.Rotation = 20
         UIGradient.Parent = Fill
 
-        local left_section = Instance.new("ScrollingFrame")
+         local left_section = Instance.new("ScrollingFrame")
         left_section.Name = "LeftSection"
         left_section.Active = true
         left_section.ScrollingEnabled = true
@@ -560,16 +567,45 @@ end)
         end)
 
 
-     
+        local right_section = Instance.new("ScrollingFrame")
+        right_section.Name = "RightSection"
+        right_section.Active = false
+        right_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        right_section.BackgroundTransparency = 1.000
+        right_section.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        right_section.BorderSizePixel = 0
+        right_section.Position = UDim2.new(0.662374794, 0, 0.126760557, 0)
+        right_section.Size = UDim2.new(0, 215, 0, 372)
+        right_section.AutomaticCanvasSize = Enum.AutomaticSize.XY
+        right_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
+        right_section.ScrollBarThickness = 0
+
+        local rightsectionlist = Instance.new("UIListLayout")
+        rightsectionlist.Parent = right_section
+
+        rightsectionlist.HorizontalAlignment = Enum.HorizontalAlignment.Center
+        rightsectionlist.SortOrder = Enum.SortOrder.LayoutOrder
+        rightsectionlist.Padding = UDim.new(0, 7)
+
+        if container.Container:FindFirstChild('RightSection') then
+            left_section.Visible = false
+            right_section.Visible = false
+        else
+            Tab.open_tab({
+                tab = tab,
+                left_section = left_section,
+                right_section = right_section
+            })
+        end
 
         left_section.Parent = container.Container
-      
+        right_section.Parent = container.Container
 
         tab.MouseButton1Click:Connect(function()
             Tab.open_tab({
                 tab = tab,
                 left_section = left_section,
-              
+                right_section = right_section
             })
         end)
 
