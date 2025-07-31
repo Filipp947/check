@@ -569,17 +569,7 @@ end)
 
         local right_section = Instance.new("ScrollingFrame")
         right_section.Name = "RightSection"
-        right_section.Active = false
-        right_section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        right_section.BackgroundTransparency = 1.000
-        right_section.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        right_section.BorderSizePixel = 0
-        right_section.Position = UDim2.new(0.662374794, 0, 0.126760557, 0)
-        right_section.Size = UDim2.new(0, 215, 0, 372)
-        right_section.AutomaticCanvasSize = Enum.AutomaticSize.XY
-        right_section.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
-        right_section.ScrollBarThickness = 0
-
+     
         local rightsectionlist = Instance.new("UIListLayout")
         rightsectionlist.Parent = right_section
 
