@@ -171,8 +171,15 @@ tab0.create_slider({
         auraRadius = value
     end
 })
-
 local itemsFolder = Workspace:WaitForChild("Items")
+local function getRandomCoord()
+    if math.random() < 0.5 then
+        return math.random(-200, -100)
+    else
+        return math.random(100, 200)
+    end
+end
+
 tab0.create_toggle({ 
     name = 'Auto Sapling',
     flag = 'killaura_enabled',
@@ -180,21 +187,27 @@ tab0.create_toggle({
     enabled = false,
 
     callback = function(state)
-    
-task.spawn(function()
-        while task.wait(.5) and state do
-        for _, item in pairs(itemsFolder:GetChildren()) do
-            if item.Name == "Sapling" then
-                local args = {
-                    item, 
-                    Vector3.new(6, 1, -20)
-                }
-               game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("RequestPlantItem"):InvokeServer(unpack(args))
+        task.spawn(function()
+            while task.wait(0.5) and state do
+                for _, item in pairs(itemsFolder:GetChildren()) do
+                    if item.Name == "Sapling" then
+                        local randomX = getRandomCoord()
+                        local randomZ = getRandomCoord()
+                        local position = Vector3.new(randomX, 1, randomZ)
+
+                        local args = {
+                            item, 
+                            position
+                        }
+
+                        game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("RequestPlantItem"):InvokeServer(unpack(args))
+                    end
+                end
             end
-        end
-        
-    end end) end
+        end)
+    end
 })
+
 
 
 local campfireDropPos = Vector3.new(0, 19, 0)
@@ -634,6 +647,7 @@ tab2.create_button({
     enabled = false,
 
     callback = function(state: boolean)
+    while task.wait() and state do
      local Lighting = game:GetService("Lighting")
         
         if value then
@@ -653,7 +667,7 @@ tab2.create_button({
             Lighting.FogEnd = fogEnd
             Lighting.FogColor = fogColor
         end
-
+    end
     end
 })
 tab.create_button({
@@ -736,68 +750,40 @@ tab.create_button({
         teleportToRandomTree()
     end
 })
-
 local Workspace = game:GetService("Workspace")
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
-local itemFolder = Workspace:WaitForChild("Items")
 
+local itemFolder = Workspace:WaitForChild("Items")
 local map = Workspace:WaitForChild("Map")
-local foliageFolder = map:FindFirstChild("Foliage")
-local landmarksFolder = map:FindFirstChild("Landmarks")
+local foliage = map:FindFirstChild("Foliage")
+local landmarks = map:FindFirstChild("Landmarks")
 
 local savedPositions = {}
 local itemDropdown
 
-local function setPartProperties(model)
-    for _, part in ipairs(model:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = true
-            part.Anchored = true
-        end
-    end
-end
-
-local function tpModel(model, targetCF)
-    local boxCF = model:GetBoundingBox()
-    local offset = targetCF.Position - boxCF.Position
-    for _, part in ipairs(model:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CFrame = part.CFrame + offset
-        end
-    end
-    setPartProperties(model)
-end
-
-local function getSmallTrees()
+local function findSmallTree()
     local trees = {}
 
-    if foliageFolder then
-        for _, obj in ipairs(foliageFolder:GetDescendants()) do
-            if obj.Name == "Small Tree" and obj:IsA("Model") then
-                table.insert(trees, obj)
+    local function collect(folder)
+        if folder then
+            for _, obj in ipairs(folder:GetDescendants()) do
+                if obj:IsA("Model") and obj.Name == "Small Tree" and obj:GetPivot() then
+                    table.insert(trees, obj)
+                end
             end
         end
     end
 
-    if landmarksFolder then
-        for _, obj in ipairs(landmarksFolder:GetDescendants()) do
-            if obj.Name == "Small Tree" and obj:IsA("Model") then
-                table.insert(trees, obj)
-            end
-        end
-    end
+    collect(foliage)
+    collect(landmarks)
 
-    return trees
+    return #trees > 0 and trees or nil
 end
 
 local function getSortedUniqueNames()
     local found = {}
-
-    local smallTrees = getSmallTrees()
-    if #smallTrees > 0 then
-        found["Small Tree"] = true
-    end
+    local hasSmallTree = findSmallTree() ~= nil
 
     for _, item in ipairs(itemFolder:GetChildren()) do
         if item:IsA("Model") and item:GetPivot() then
@@ -805,22 +791,40 @@ local function getSortedUniqueNames()
         end
     end
 
-    local list = {}
-    if found["Small Tree"] then
-        table.insert(list, "Small Tree")
-        found["Small Tree"] = nil
-    end
-
-    local otherNames = {}
+    local otherItems = {}
     for name in pairs(found) do
-        table.insert(otherNames, name)
+        if name ~= "Small Tree" then
+            table.insert(otherItems, name)
+        end
     end
-    table.sort(otherNames)
-    for _, name in ipairs(otherNames) do
-        table.insert(list, name)
+    table.sort(otherItems)
+
+    local finalList = {}
+    if hasSmallTree then
+        table.insert(finalList, "Small Tree")
+    end
+    for _, name in ipairs(otherItems) do
+        table.insert(finalList, name)
     end
 
-    return list
+    return finalList
+end
+
+
+local function teleportModel(model)
+    local hrp = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    if not model.PrimaryPart then
+        local primary = model:FindFirstChildWhichIsA("BasePart")
+        if primary then
+            model.PrimaryPart = primary
+        else
+            return
+        end
+    end
+
+    model:SetPrimaryPartCFrame(CFrame.new(hrp.Position + Vector3.new(0, 5, 0)))
 end
 
 itemDropdown = tab.create_multidropdown({
@@ -831,74 +835,40 @@ itemDropdown = tab.create_multidropdown({
     options = getSortedUniqueNames(),
 
     callback = function(selected)
-        local hrp = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
-        if not hrp then return end
-
-        local targetCF = CFrame.new(hrp.Position + Vector3.new(5, 15, 0))
-
-        for _, itemName in ipairs(selected) do
-            if itemName == "Small Tree" then
-               
-       
-        local Players = game:GetService("Players")
-        local Workspace = game:GetService("Workspace")
-
-        local localPlayer = Players.LocalPlayer
-        local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-        local hrp = character:WaitForChild("HumanoidRootPart")
-
-        local map = Workspace:WaitForChild("Map")
-        local landmarks = map:FindFirstChild("Landmarks")
-        local foliage = map:FindFirstChild("Foliage")
-        local targetCF = hrp.CFrame + Vector3.new(0, 15, 0)
-
-        local function tpModel(model)
-            local boxCF = model:GetBoundingBox()
-            local offset = targetCF.Position - boxCF.Position
-            for _, part in ipairs(model:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CFrame = part.CFrame + offset
-                    part.CanCollide = false
-                    part.Anchored = false
+   
+        if table.find(selected, "Small Tree") then
+            local trees = findSmallTree()
+            if trees then
+                for _, tree in ipairs(trees) do
+                    if not savedPositions[tree] then
+                        savedPositions[tree] = tree:GetPivot()
+                        teleportModel(tree)
+                    end
                 end
             end
-        end
-
-        local function bringTreesFrom(folder)
-            for _, obj in ipairs(folder:GetDescendants()) do
-                if obj.Name == "Small Tree" then
-                    if obj:IsA("Model") then
-                        tpModel(obj)
-                    elseif obj:IsA("BasePart") then
-                        obj.CFrame = targetCF
-                        obj.CanCollide = false
-                        obj.Anchored = false
+        else
+            local trees = findSmallTree()
+            if trees then
+                for _, tree in ipairs(trees) do
+                    if savedPositions[tree] then
+                        tree:PivotTo(savedPositions[tree])
+                        savedPositions[tree] = nil
                     end
                 end
             end
         end
 
-        if landmarks then bringTreesFrom(landmarks) end
-        if foliage then bringTreesFrom(foliage) end
-            else
-                for _, item in ipairs(itemFolder:GetChildren()) do
-                    if item.Name == itemName and item:IsA("Model") and item:GetPivot() then
-                        if not savedPositions[item] then
-                            savedPositions[item] = item:GetPivot()
-                            item:PivotTo(targetCF)
-                            setPartProperties(item)
-                        end
-                    end
-                end
-            end
-        end
+        for _, item in ipairs(itemFolder:GetChildren()) do
+            if item:IsA("Model") and item:GetPivot() then
+                local isSelected = table.find(selected, item.Name) ~= nil
 
-        for model, originalPivot in pairs(savedPositions) do
-            local name = model.Name
-            local stillSelected = table.find(selected, name) or (name == "Small Tree" and table.find(selected, "Small Tree"))
-            if not stillSelected then
-                model:PivotTo(originalPivot)
-                savedPositions[model] = nil
+                if isSelected and not savedPositions[item] then
+                    savedPositions[item] = item:GetPivot()
+                    teleportModel(item)
+                elseif not isSelected and savedPositions[item] then
+                    item:PivotTo(savedPositions[item])
+                    savedPositions[item] = nil
+                end
             end
         end
     end
@@ -913,30 +883,11 @@ itemFolder.ChildAdded:Connect(function()
     task.wait(0.1)
     itemDropdown:Refresh()
 end)
+
 itemFolder.ChildRemoved:Connect(function()
     task.wait(0.1)
     itemDropdown:Refresh()
 end)
-if foliageFolder then
-    foliageFolder.ChildAdded:Connect(function()
-        task.wait(0.1)
-        itemDropdown:Refresh()
-    end)
-    foliageFolder.ChildRemoved:Connect(function()
-        task.wait(0.1)
-        itemDropdown:Refresh()
-    end)
-end
-if landmarksFolder then
-    landmarksFolder.ChildAdded:Connect(function()
-        task.wait(0.1)
-        itemDropdown:Refresh()
-    end)
-    landmarksFolder.ChildRemoved:Connect(function()
-        task.wait(0.1)
-        itemDropdown:Refresh()
-    end)
-end
 
 
 
@@ -1408,143 +1359,68 @@ tab2.create_toggle({
     end
 })
 
+local Plr = game.Players.LocalPlayer
+local Camera = game.Workspace.CurrentCamera
+
+getgenv().flyspeed = getgenv().flyspeed or 50
+getgenv().fly = getgenv().fly or false
+
+if not Plr.Character then
+    Plr.CharacterAdded:Wait()
+end
+
+local HRP = Plr.Character:WaitForChild("HumanoidRootPart")
+
+local GetMoveVector = require(Plr:WaitForChild("PlayerScripts").PlayerModule:WaitForChild("ControlModule"))
+
+local FlyForce
+
+game["Run Service"].RenderStepped:Connect(function()
+    if getgenv().fly then
+        if not FlyForce then
+            FlyForce = Instance.new("BodyVelocity")
+            FlyForce.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+            FlyForce.Parent = HRP
+        end
+        FlyForce.Velocity = Vector3.new()
+        local MoveDir = GetMoveVector:GetMoveVector()
+        local Speed = getgenv().flyspeed or 50
+        if MoveDir.X ~= 0 then
+            FlyForce.Velocity = FlyForce.Velocity + Camera.CFrame.RightVector * MoveDir.X * Speed
+        end
+        if MoveDir.Z ~= 0 then
+            FlyForce.Velocity = FlyForce.Velocity - Camera.CFrame.LookVector * MoveDir.Z * Speed
+        end
+    else
+        if FlyForce then
+            FlyForce:Destroy()
+            FlyForce = nil
+        end
+    end
+end)
+
 tab2.create_toggle({
     name = 'Fly',
     flag = 'fly',
     section = 'left',
     enabled = false,
-
-    callback = function(state: boolean)
-          local Players = game:GetService("Players")
-    local Workspace = game:GetService("Workspace")
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-    local player = Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
-    local root = character:WaitForChild("HumanoidRootPart")
-    local startcframe=root.CFrame
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-
-if true then
-    
-local player = Players.LocalPlayer
-local FLYING = false
-
-local CONTROL = {Q = 0, E = 0}
-
-function sFLY()
-    local character = player.Character or player.CharacterAdded:Wait()
-    local root = character:WaitForChild("HumanoidRootPart")
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-
-    if humanoid then
-        humanoid.JumpPower = 0
-        humanoid.AutoJumpEnabled = false
-    end
-
-    local bg = Instance.new("BodyGyro", root)
-    local bv = Instance.new("BodyVelocity", root)
-    bg.P = 9e4
-    bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-    bg.cframe = root.CFrame
-    bv.velocity = Vector3.new(0, 0, 0)
-    bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
-
-    FLYING = true
-
-    UserInputService.InputBegan:Connect(function(input, gameProcessed)
-        if gameProcessed then return end
-        if input.UserInputType == Enum.UserInputType.Keyboard then
-            local key = input.KeyCode.Name:lower()
-            if key == "e" then CONTROL.E = 2
-            elseif key == "q" then CONTROL.Q = -2
-            end
-        end
-    end)
-
-    UserInputService.InputEnded:Connect(function(input, gameProcessed)
-        if gameProcessed then return end
-        if input.UserInputType == Enum.UserInputType.Keyboard then
-            local key = input.KeyCode.Name:lower()
-            if key == "e" then CONTROL.E = 0
-            elseif key == "q" then CONTROL.Q = 0
-            end
-        end
-    end)
-
-    RunService.RenderStepped:Connect(function()
-    if FLYING then
-        local speed = getgenv().vflyspeed or 10
-        local camCF = workspace.CurrentCamera.CFrame
-
-        local moveDir = humanoid and humanoid.MoveDirection or Vector3.new(0, 0, 0)
-        local vertical = CONTROL.E + CONTROL.Q
-
-        local camLook = camCF.LookVector -- полный вектор с вертикалью
-        local camRight = Vector3.new(camCF.RightVector.X, 0, camCF.RightVector.Z)
-        if camRight.Magnitude > 0 then camRight = camRight.Unit end
-
-        local forwardAmount = moveDir:Dot(camLook.Unit)
-        local rightAmount = moveDir:Dot(camRight)
-
-        local direction = (camLook.Unit * forwardAmount) + (camRight * rightAmount)
-
-        if vertical ~= 0 then
-            direction = direction + Vector3.new(0, vertical, 0)
-        end
-
-        if direction.Magnitude > 0 then
-            direction = direction.Unit
-        end
-
-        bv.Velocity = direction * speed
-        bg.CFrame = camCF
-    end
-end)
-
-
-end
-
-function stopFLY()
-    FLYING = false
-    local character = player.Character
-    if character then
-        local root = character:FindFirstChild("HumanoidRootPart")
-        if root then
-            for _, obj in ipairs(root:GetChildren()) do
-                if obj:IsA("BodyGyro") or obj:IsA("BodyVelocity") then
-                    obj:Destroy()
-                end
-            end
-        end
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid.JumpPower = 50
-            humanoid.AutoJumpEnabled = true
-        end
-    end
-end
-
- end
-    if state then sFLY() else stopFLY() end
+    callback = function(state)
+       if state then getgenv().fly = true else getgenv().fly = false end
     end
 })
+
 tab2.create_slider({
     name = 'Fly Speed',
     flag = 'sliderflagname',
-
     section = 'left',
-
     value = 35,
     minimum_value = 10,
     maximum_value = 1000,
-
-    callback = function(value: number)
-        getgenv().vflyspeed=value
+    callback = function(value)
+        getgenv().flyspeed = value
     end
 })
+
 tab2.create_slider({
     name = 'Walkspeed',
     flag = 'flyspeed',
