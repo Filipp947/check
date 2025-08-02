@@ -19,7 +19,7 @@ local tab3 = main:create_tab('ESP')
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ToolDamageObject = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToolDamageObject")
+
 local Workspace = game:GetService("Workspace")
 local remoteEvents = ReplicatedStorage:WaitForChild("RemoteEvents")
 
@@ -30,7 +30,7 @@ local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
 
 local LocalPlayer = Players.LocalPlayer
-local Remote = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToolDamageObject")
+
 local CharacterFolder = Workspace:FindFirstChild("Characters") or Workspace
 
 local player = game.Players.LocalPlayer
@@ -136,7 +136,7 @@ tab0.create_toggle({
                 if not char then return end
 
                 local weapon = getEquippedWeapon()
-                if not weapon or not Remote then return end
+                if not weapon or not ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToolDamageObject") then return end
 
                 local root = char:FindFirstChild("HumanoidRootPart")
                 if not root then return end
@@ -258,9 +258,7 @@ local greedyDrop = tab0.create_multidropdown({
         for _, name in ipairs(selected) do
             greedyFuelEnabled[name] = true
         end
-    end
-})
-
+        
 
 coroutine.wrap(function()
     while true do
@@ -284,6 +282,9 @@ coroutine.wrap(function()
         task.wait(2)
     end
 end)()
+
+    end
+})
 
 local itemsFolder = workspace:WaitForChild("Items")
 local remoteEvents = game.ReplicatedStorage:WaitForChild("RemoteEvents")
@@ -434,7 +435,7 @@ coroutine.wrap(function()
 end)()
 
 local itemsFolder = workspace:WaitForChild("Items")
-local remoteConsume = game.ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("RequestConsumeItem")
+
 
 local autoEatFoods = { "Cooked Steak", "Cooked Morsel", "Berry", "Carrot", "Apple" }
 
@@ -491,6 +492,7 @@ tab0.create_slider({
 })
 
 
+
 coroutine.wrap(function()
     while true do
         if autoEatEnabled then
@@ -503,7 +505,7 @@ coroutine.wrap(function()
 
             if #foodList > 0 then
                 local food = foodList[math.random(1, #foodList)]
-                pcall(function() remoteConsume:InvokeServer(food) end)
+                pcall(function() game.ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("RequestConsumeItem"):InvokeServer(food) end)
             end
         end
         task.wait(eatDelay)
@@ -511,8 +513,18 @@ coroutine.wrap(function()
 end)()
 
 local player = game.Players.LocalPlayer
-local hungerBar = player:WaitForChild("PlayerGui"):WaitForChild("Interface")
-    :WaitForChild("StatBars"):WaitForChild("HungerBar"):WaitForChild("Bar")
+local function safeGetGui(...)
+    local current = ...
+    for i = 2, select("#", ...) do
+        local name = select(i, ...)
+        current = current:FindFirstChild(name)
+        if not current then return nil end
+    end
+    return current
+end
+
+local bar = safeGetGui(player, "PlayerGui", "Interface", "StatBars", "HungerBar", "Bar")
+if bar then
 
 coroutine.wrap(function()
     while true do
@@ -528,7 +540,7 @@ coroutine.wrap(function()
 
                     if #foodList > 0 then
                         local food = foodList[math.random(1, #foodList)]
-                        pcall(function() remoteConsume:InvokeServer(food) end)
+                        pcall(function() game.ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("RequestConsumeItem"):InvokeServer(food) end)
                     else
                         break
                     end
@@ -540,8 +552,7 @@ coroutine.wrap(function()
         task.wait(3)
     end
 end)()
-
-
+end
  
 local treeFarmActive = false
 
@@ -603,7 +614,7 @@ local function startTreeFarm()
                                 "1_8264699301",
                                 t.trunk.CFrame
                             }
-                            pcall(function() ToolDamageObject:InvokeServer(unpack(args)) end)
+                            pcall(function() ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("ToolDamageObject"):InvokeServer(unpack(args)) end)
                             task.wait(1)
                         end
                     end
