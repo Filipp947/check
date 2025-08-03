@@ -526,6 +526,11 @@ end
 local bar = safeGetGui(player, "PlayerGui", "Interface", "StatBars", "HungerBar", "Bar")
 if bar then
 
+local hungerBar = player:WaitForChild("PlayerGui"):WaitForChild("Interface")
+    :WaitForChild("StatBars"):WaitForChild("HungerBar"):WaitForChild("Bar")
+
+
+
 coroutine.wrap(function()
     while true do
         if autoEatHPEnabled then
